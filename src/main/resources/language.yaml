@@ -1,0 +1,16 @@
+# Support MiniMassages and PlaceholderAPI
+prefix: "DMRP"
+
+message:
+  try:
+    successful: "%s %s successful."
+    unsuccessful: "%s %s unsuccessful."
+    error: "No try text specified."
+
+  dice:
+    throw_one: "%s throw dice and have: "
+    throw_many: "%s throw dices and have: "
+    error_amount: "Invalid input for number of dices"
+    error_sides: "Invalid input for number of sides"
+
+  reload: "Config reloaded!"

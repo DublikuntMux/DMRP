@@ -1,0 +1,45 @@
+name: DMRP
+main: com.dublikunt.rp.DMRP
+version: "${version}"
+api-version: "${apiVersion}"
+prefix: DMRP
+load: STARTUP
+description: "Plugin that add new role play commands and mechanics to you server."
+website: https://github.com/DublikuntMux/DMRP
+authors: [ "Dublikunt Max" ]
+softdepend: [PlaceholderAPI]
+commands:
+  rp-reload:
+    description: "Reload plugin config"
+    permission: dmrp.command.reload
+    permission-message: §3DMRP §f> You do not have permission to do that.
+    usage: /rp-reload
+  try:
+    description: "50% change to do something"
+    permission: dmrp.command.try
+    permission-message: §3DMRP §f> You do not have permission to do that.
+    usage: /try [what to try]
+  dice:
+    description: "throw selected amount of dice with selected amount of sides"
+    permission: dmrp.command.dice
+    permission-message: §3DMRP §f> You do not have permission to do that.
+    usage: /dice [amount] [sides]
+
+permissions:
+  dmrp.command.*:
+    description: Gives access to all DMRP commands
+    default: op
+    children:
+      dmrp.command.reload: true
+      dmrp.command.try: true
+      dmrp.command.dice: true
+  dmrp.command.reload:
+    description: Has permission to reload plugin
+    default: op
+  dmrp.command.try:
+    description: Has permission to try command
+  dmrp.command.dice:
+    description: Has permission to try command
+
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}
