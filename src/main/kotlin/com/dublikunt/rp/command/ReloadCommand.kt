@@ -1,6 +1,6 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.getLanguageConfiguration
+import com.dublikunt.rp.languageConfiguration
 import com.dublikunt.rp.reload
 import com.dublikunt.rp.say
 import org.bukkit.command.Command
@@ -12,9 +12,9 @@ class ReloadCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         reload()
 
-        say(getLanguageConfiguration().getString("message.reload")!!)
+        say(languageConfiguration.getString("message.reload")!!)
         if (sender is Player) {
-            say(sender, getLanguageConfiguration().getString("message.reload")!!)
+            say(sender, languageConfiguration.getString("message.reload")!!)
         }
 
         return true

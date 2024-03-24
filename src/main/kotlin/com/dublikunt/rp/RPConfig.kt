@@ -10,11 +10,19 @@ private lateinit var configFile: File
 private lateinit var languageFile: File
 
 private lateinit var pluginConfiguration: FileConfiguration
-private lateinit var languageConfiguration: FileConfiguration
-
-var sayDistance: Int = 0
+lateinit var languageConfiguration: FileConfiguration
     private set
+
 var usePlaceholders: Boolean = false
+    private set
+
+var sayDistance: Int = 15
+    private set
+var successChange: Int = 50
+    private set
+var maxDices: Int = 50
+    private set
+var maxSides: Int = 50
     private set
 
 fun setup() {
@@ -58,9 +66,8 @@ fun reload() {
     pluginConfiguration = YamlConfiguration.loadConfiguration(configFile)
     languageConfiguration = YamlConfiguration.loadConfiguration(languageFile)
 
-    sayDistance = pluginConfiguration.getInt("distance")
-}
-
-fun getLanguageConfiguration(): FileConfiguration {
-    return languageConfiguration
+    sayDistance = pluginConfiguration.getInt("distance", 15)
+    successChange = pluginConfiguration.getInt("success_change", 50)
+    maxDices = pluginConfiguration.getInt("max_dices", 100)
+    maxSides = pluginConfiguration.getInt("max_sides", 255)
 }

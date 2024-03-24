@@ -1,5 +1,9 @@
 # DMRP - Role Play Plugin for Minecraft
 
+<p align="center">
+    <img alt="DMRP logo" height="87" src="content/DMRP.png" title="DMRP logo" width="256"/>
+</p>
+
 ## Introduction
 
 DMRP is a Minecraft plugin designed to enhance role-playing experiences on your server. It introduces new commands and mechanics that can be used to create immersive role-playing scenarios. This plugin is compatible with Minecraft servers running Spigot or Bukkit.
@@ -7,14 +11,14 @@ DMRP is a Minecraft plugin designed to enhance role-playing experiences on your 
 ## Features
 
 - **Dice Command**: Allows players to throw dice with a specified number of sides. Players can throw a single die or multiple dice at once.
-- **Try Command**: Gives players a 50% chance to succeed in a specified action. This can be used for various role-playing scenarios.
+- **Try Command**: Gives players a customizable chance to succeed in a specified action. This can be used for various role-playing scenarios.
 - **Reload Command**: Reloads the plugin's configuration files, allowing changes to take effect without restarting the server.
 - **Support for PlaceholderAPI**: If installed, DMRP can use placeholders to customize messages further.
 - **Support for MiniMassages**: DMRP can use MiniMassages format to customize messages further.
 
 ## Installation
 
-1. Download the latest version of DMRP from the [GitHub repository](https://github.com/DublikuntMux/DMRP).
+1. Download the latest version of DMRP from the [GitHub repository](https://github.com/DublikuntMux/DMRP) or [Modrinth](https://modrinth.com/plugin/dmrp).
 2. Place the downloaded `.jar` file into your server's `plugins` directory.
 3. Restart your server to load the plugin.
 
@@ -33,7 +37,7 @@ DMRP uses two configuration files: `config.yaml` and `language.yaml`. These file
 
 ## Permissions
 
-DMRP uses a permission system to control access to its commands. By default, all commands are restricted to operators. You can customize these permissions in your server's `permissions.yml` file.
+DMRP uses a permission system to control access to its commands. By default, all commands (except /rp-reload) are restricted to all users. You can customize these permissions in your server's `permissions.yml` file.
 
 ## Support
 

@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "com.dublikunt"
-version = "1.0.0"
+version = "1.1.0"
 
 val mcApiVersion: String by project
 val adventurePlatformVersion: String by project
@@ -22,7 +22,6 @@ val minimessageVersion: String by project
 val bstatsVersion: String by project
 val placeholderVersion: String by project
 val kotlinVersion: String by project
-val repoRef: String by project
 
 fun currentDateString(): String = OffsetDateTime.now(ZoneOffset.UTC).toLocalDate().format(DateTimeFormatter.ISO_DATE)
 

@@ -35,6 +35,6 @@ fun say(text: String) {
 }
 
 fun say(audience: Audience, text: String) {
-    val prefixed = getLanguageConfiguration().getString("prefix") + " > " + text
+    val prefixed = languageConfiguration.getString("prefix") + " > " + text
     audience.sendMessage(mm.deserialize(prefixed))
 }
