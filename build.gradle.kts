@@ -1,7 +1,3 @@
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-
 buildscript {
     repositories {
         mavenCentral()
@@ -22,8 +18,6 @@ val minimessageVersion: String by project
 val bstatsVersion: String by project
 val placeholderVersion: String by project
 val kotlinVersion: String by project
-
-fun currentDateString(): String = OffsetDateTime.now(ZoneOffset.UTC).toLocalDate().format(DateTimeFormatter.ISO_DATE)
 
 java {
     toolchain {
@@ -60,6 +54,8 @@ tasks {
             "version" to version,
             "apiVersion" to mcApiVersion,
             "kotlinVersion" to kotlinVersion,
+            "adventurePlatformVersion" to adventurePlatformVersion,
+            "minimessageVersion" to minimessageVersion
         )
 
         filesMatching("plugin.yml") {
@@ -73,14 +69,13 @@ tasks {
             "org/intellij/lang/annotations/**",
             "org/jetbrains/annotations/**",
             "META-INF/**",
-            "javax/**",
             "kotlin/**",
+            "net/kyori/**",
         )
         mergeServiceFiles()
 
         val prefix = "com.dublikunt.rp.libs"
         listOf(
-            "net.kyori",
             "org.bstats",
         ).forEach { pack ->
             relocate(pack, "$prefix.$pack")
