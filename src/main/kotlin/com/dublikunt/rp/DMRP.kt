@@ -15,7 +15,7 @@ class DMRP : JavaPlugin() {
         getCommand("rp-reload")!!.setExecutor(ReloadCommand())
 
         getCommand("try")!!.setExecutor(TryCommand())
-        
+
         getCommand("dice")!!.setExecutor(DiceCommand())
         getCommand("dice")!!.tabCompleter = DiceCommand()
     }

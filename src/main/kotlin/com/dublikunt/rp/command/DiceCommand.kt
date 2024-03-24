@@ -44,7 +44,7 @@ class DiceCommand : CommandExecutor, TabExecutor {
                     say(sender.location, output)
                     return false
                 }
-                val output =  if (numDices > 1) {
+                val output = if (numDices > 1) {
                     String.format(
                         getLanguageConfiguration().getString("message.dice.throw_many")!!,
                         sender.displayName

@@ -10,7 +10,7 @@ DMRP is a Minecraft plugin designed to enhance role-playing experiences on your 
 - **Try Command**: Gives players a 50% chance to succeed in a specified action. This can be used for various role-playing scenarios.
 - **Reload Command**: Reloads the plugin's configuration files, allowing changes to take effect without restarting the server.
 - **Support for PlaceholderAPI**: If installed, DMRP can use placeholders to customize messages further.
-- **Support for MiniMasages**: If installed, DMRP can use MiniMasages format to customize messages further.
+- **Support for MiniMassages**: DMRP can use MiniMassages format to customize messages further.
 
 ## Installation
 
@@ -28,8 +28,8 @@ DMRP uses two configuration files: `config.yaml` and `language.yaml`. These file
 ## Commands
 
 - **/rp-reload**: Reloads the plugin's configuration files.
-- **/try [what to try]**: Attempts a specified action with a 50% chance of success.
-- **/dice [amount] [sides]**: Throws a specified number of dice with a specified number of sides.
+- **/try {what to try}**: Attempts a specified action with a 50% chance of success.
+- **/dice {amount} {sides}**: Throws a specified number of dice with a specified number of sides.
 
 ## Permissions
 
@@ -45,4 +45,4 @@ Contributions to DMRP are welcome! If you'd like to contribute, please fork the 
 
 ## License
 
-DMRP is licensed under the MIT License. See the `LICENSE` file for more details.
+DMRP is licensed under the BSD-3 License. See the `LICENSE` file for more details.

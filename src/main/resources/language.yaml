@@ -3,13 +3,13 @@ prefix: "DMRP"
 
 message:
   try:
-    successful: "%s %s successful."
-    unsuccessful: "%s %s unsuccessful."
+    successful: "%s %s successful." # first s% - player name, second s% - what say
+    unsuccessful: "%s %s unsuccessful." # first s% - player name, second s% - what say
     error: "No try text specified."
 
   dice:
-    throw_one: "%s throw dice and have: "
-    throw_many: "%s throw dices and have: "
+    throw_one: "%s throw dice and have: " # s% - player name
+    throw_many: "%s throw dices and have: " # s% - player name
     error_amount: "Invalid input for number of dices"
     error_sides: "Invalid input for number of sides"
 

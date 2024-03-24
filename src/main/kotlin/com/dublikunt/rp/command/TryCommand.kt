@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom
 class TryCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (sender is Player) {
-            if (args.isEmpty()){
+            if (args.isEmpty()) {
                 say(sender, getLanguageConfiguration().getString("message.try.error")!!)
             } else {
                 val x = ThreadLocalRandom.current().nextBoolean()
