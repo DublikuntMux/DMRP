@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.dublikunt"
-version = "1.1.0"
+version = "1.2.0"
 
 val mcApiVersion: String by project
 val adventurePlatformVersion: String by project
