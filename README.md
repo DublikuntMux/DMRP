@@ -8,8 +8,8 @@
 
 DMRP is a Minecraft plugin designed to enhance role-playing experiences on your server. It introduces new commands and mechanics that can be used to create immersive role-playing scenarios. This plugin is compatible with Minecraft servers running Spigot or Bukkit.
 
-[<img alt="github" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg">](https://github.com/DublikuntMux/DMRP)
-[<img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg">](https://modrinth.com/plugin/dmrp)
+[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/dmrp)
+[![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg)](https://github.com/DublikuntMux/DMRP)
 <img alt="spigot" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg"/>
 <img alt="paper" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/paper_vector.svg"/>
 <img alt="purpur" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/purpur_vector.svg"/>
@@ -24,12 +24,12 @@ DMRP is a Minecraft plugin designed to enhance role-playing experiences on your 
 - **Support for MiniMassages**: DMRP can use MiniMassages format to customize messages further.
 
 See command showcase on:  
-[<img alt="modrinth-gallery" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/modrinth-gallery_vector.svg">](https://modrinth.com/plugin/dmrp/gallery)
+[![modrinth-gallery](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/modrinth-gallery_vector.svg)](https://modrinth.com/plugin/dmrp/gallery)
 
 
 ## Installation
 
-1. Download the latest version of DMRP from the [GitHub repository](https://github.com/DublikuntMux/DMRP) or [Modrinth](https://modrinth.com/plugin/dmrp).
+1. Download the latest version of DMRP from the [Modrinth](https://modrinth.com/plugin/dmrp) or [GitHub repository](https://github.com/DublikuntMux/DMRP).
 2. Place the downloaded `.jar` file into your server's `plugins` directory.
 3. Restart your server to load the plugin.
 
@@ -37,13 +37,13 @@ See command showcase on:
 
 DMRP uses two configuration files: `config.yaml` and `language.yaml`. These files are located in the plugin's directory under `plugins/DMRP/`.
 
-- `config.yaml`: Contains settings such as the distance at which player commands are heard.
-- `language.yaml`: Contains messages and prefixes used by the plugin.
+- `config.yaml`: Contains settings such as the distance at which player command outputs are heard.
+- `language.yaml`: Contains messages used by the plugin.
 
 ## Commands
 
 - **/rp-reload**: Reloads the plugin's configuration files.
-- **/try {what to try}**: Attempts a specified action with a 50% chance of success.
+- **/try {what to try}**: Attempts a specified action with a configured chance of success.
 - **/dice {amount} {sides}**: Throws a specified number of dice with a specified number of sides.
 
 ## Permissions
@@ -60,4 +60,4 @@ Contributions to DMRP are welcome! If you'd like to contribute, please fork the 
 
 ## License
 
-DMRP is licensed under the BSD-3 License. See the `LICENSE` file for more details.
+DMRP is licensed under the BSD-3 License. See the `LICENSE.md` file for more details.

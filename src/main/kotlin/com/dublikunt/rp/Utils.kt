@@ -38,3 +38,11 @@ fun say(audience: Audience, text: String) {
     val prefixed = languageConfiguration.getString("prefix") + " > " + text
     audience.sendMessage(mm.deserialize(prefixed))
 }
+
+fun replacePlaceholders(input: String, placeholders: Map<String, String>): String {
+    var result = input
+    placeholders.forEach { (key, value) ->
+        result = result.replace("%$key%", value)
+    }
+    return result
+}

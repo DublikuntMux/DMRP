@@ -55,11 +55,11 @@ fun setup() {
         }
     }
 
-    reload()
-
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
         usePlaceholders = true
     }
+
+    reload()
 }
 
 fun reload() {

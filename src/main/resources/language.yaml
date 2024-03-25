@@ -3,9 +3,13 @@ prefix: "DMRP"
 
 message:
   try:
-    successful: "%s %s successful." # first s% - player name, second s% - what say
-    unsuccessful: "%s %s unsuccessful." # first s% - player name, second s% - what say
+    successful: "%who% %what% successful." # %who% - player name, %what% - what say
+    unsuccessful: "%who% %what% unsuccessful." # %who% - player name, %what% - what say
     error: "No try text specified."
+    suggestion: # suggestion for try command (can be null)
+      - "crack lock"
+      - "secretly took out item"
+      - "dodged the ..."
 
   dice:
     throw_one: "%s throw dice and have: " # s% - player name

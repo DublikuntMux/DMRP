@@ -1,15 +1,17 @@
 package com.dublikunt.rp.command
 
 import com.dublikunt.rp.languageConfiguration
+import com.dublikunt.rp.replacePlaceholders
 import com.dublikunt.rp.say
 import com.dublikunt.rp.successChange
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom
 
-class TryCommand : CommandExecutor {
+class TryCommand : CommandExecutor, TabExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (sender is Player) {
             if (args.isEmpty()) {
@@ -19,18 +21,32 @@ class TryCommand : CommandExecutor {
                 val massage: String
                 val who: String = sender.displayName
                 val what = args.joinToString(" ")
+                val placeholders = mapOf(
+                    "who" to who,
+                    "what" to what
+                )
                 massage = if (x) {
-                    String.format(languageConfiguration.getString("message.try.successful")!!, who, what)
+                    replacePlaceholders(languageConfiguration.getString("message.try.successful")!!, placeholders)
                 } else {
-                    String.format(
-                        languageConfiguration.getString("message.try.unsuccessful")!!,
-                        who,
-                        what
-                    )
+                    replacePlaceholders(languageConfiguration.getString("message.try.unsuccessful")!!, placeholders)
                 }
                 say(sender.location, massage)
             }
         }
         return true
+    }
+
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<String>
+    ): MutableList<String> {
+        val complete: MutableList<String> = mutableListOf()
+        if (args.size == 1) {
+            complete.addAll(languageConfiguration.getStringList("message.try.suggestion"))
+        }
+
+        return complete
     }
 }
