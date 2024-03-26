@@ -3,8 +3,10 @@ package com.dublikunt.rp
 import com.dublikunt.rp.command.DiceCommand
 import com.dublikunt.rp.command.ReloadCommand
 import com.dublikunt.rp.command.TryCommand
+import com.dublikunt.rp.config.settings
 import com.dublikunt.rp.config.setup
 import com.dublikunt.rp.leash.enableLeash
+import com.dublikunt.rp.util.checkForUpdate
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -13,6 +15,9 @@ class DMRP : JavaPlugin() {
         setup()
 
         Metrics(this, 21382)
+
+        if (settings.update)
+            checkForUpdate()
 
         getCommand("rp-reload")!!.setExecutor(ReloadCommand())
 

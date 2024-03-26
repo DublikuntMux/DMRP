@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.dublikunt"
-version = "1.2.0"
+version = "1.3.0"
 
 val mcApiVersion: String by project
 val adventurePlatformVersion: String by project
@@ -23,6 +23,8 @@ val minimessageVersion: String by project
 val bstatsVersion: String by project
 val placeholderVersion: String by project
 val kotlinVersion: String by project
+val okhttpVersion: String by project
+val orgJsonVersion: String by project
 
 java {
     toolchain {
@@ -48,6 +50,9 @@ dependencies {
     compileOnly("me.clip", "placeholderapi", placeholderVersion)
 
     implementation("org.bstats", "bstats-bukkit", bstatsVersion)
+
+    compileOnly("com.squareup.okhttp3", "okhttp", okhttpVersion)
+    implementation("org.json", "json", orgJsonVersion)
 }
 
 tasks {
@@ -62,7 +67,9 @@ tasks {
             "apiVersion" to mcApiVersion,
             "kotlinVersion" to kotlinVersion,
             "adventurePlatformVersion" to adventurePlatformVersion,
-            "minimessageVersion" to minimessageVersion
+            "minimessageVersion" to minimessageVersion,
+            "okhttpVersion" to okhttpVersion,
+            "orgJsonVersion" to orgJsonVersion,
         )
 
         filesMatching("plugin.yml") {

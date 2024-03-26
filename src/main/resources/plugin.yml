@@ -54,3 +54,5 @@ libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}
   - net.kyori:adventure-platform-bukkit:${adventurePlatformVersion}
   - net.kyori:adventure-text-minimessage:${minimessageVersion}
+  - com.squareup.okhttp3:okhttp:${okhttpVersion}
+  - org.json:json:${orgJsonVersion}

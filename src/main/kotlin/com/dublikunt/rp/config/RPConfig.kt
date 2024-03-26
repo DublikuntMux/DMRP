@@ -62,8 +62,12 @@ fun reload() {
     languageConfiguration = YamlConfiguration.loadConfiguration(languageFile)
 
     settings.sayDistance = pluginConfiguration.getInt("hear_distance", 30)
+    settings.update = pluginConfiguration.getBoolean("update", true)
+
     settings.successChange = pluginConfiguration.getInt("success_change", 50)
+
     settings.maxDices = pluginConfiguration.getInt("max_dices", 100)
     settings.maxSides = pluginConfiguration.getInt("max_sides", 255)
+
     settings.maxLeashDistance = pluginConfiguration.getInt("leash_distance", 15)
 }

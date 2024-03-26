@@ -1,5 +1,8 @@
 # Player command output hear distance in blocks
 hear_distance: 30
+# Show update message on startup.
+update: true
+
 # Change to get success on try command
 success_change: 50
 
