@@ -16,12 +16,13 @@ DMRP is a Minecraft plugin designed to enhance role-playing experiences on your 
 <img alt="sponge" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/unsupported/sponge_vector.svg"/>
 
 ## Features
-
+- **Player Leash**: Allow player leash each other using leash.
 - **Dice Command**: Allows players to throw dice with a specified number of sides. Players can throw a single die or multiple dice at once.
 - **Try Command**: Gives players a customizable chance to succeed in a specified action. This can be used for various role-playing scenarios.
 - **Reload Command**: Reloads the plugin's configuration files, allowing changes to take effect without restarting the server.
 - **Support for PlaceholderAPI**: If installed, DMRP can use placeholders to customize messages further.
 - **Support for MiniMassages**: DMRP can use MiniMassages format to customize messages further.
+- **Auto update**: Automatically check for plugin update.
 
 See command showcase on:  
 [![modrinth-gallery](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/modrinth-gallery_vector.svg)](https://modrinth.com/plugin/dmrp/gallery)

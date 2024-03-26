@@ -53,5 +53,6 @@ fun checkForUpdate() {
 
     if (isNewerVersion(currentVersion, lastVersion)) {
         say("New update available: $currentVersion -> $lastVersion")
+        say("Get last version: https://modrinth.com/plugin/dmrp")
     }
 }
