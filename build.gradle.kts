@@ -52,7 +52,7 @@ dependencies {
     implementation("org.bstats", "bstats-bukkit", bstatsVersion)
 
     compileOnly("com.squareup.okhttp3", "okhttp", okhttpVersion)
-    implementation("org.json", "json", orgJsonVersion)
+    compileOnly("org.json", "json", orgJsonVersion)
 }
 
 tasks {
