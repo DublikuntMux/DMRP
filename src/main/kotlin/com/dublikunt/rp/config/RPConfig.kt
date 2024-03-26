@@ -1,5 +1,6 @@
-package com.dublikunt.rp
+package com.dublikunt.rp.config
 
+import com.dublikunt.rp.DMRP
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
@@ -16,13 +17,7 @@ lateinit var languageConfiguration: FileConfiguration
 var usePlaceholders: Boolean = false
     private set
 
-var sayDistance: Int = 15
-    private set
-var successChange: Int = 50
-    private set
-var maxDices: Int = 50
-    private set
-var maxSides: Int = 50
+var settings: SettingsConfig = SettingsConfig
     private set
 
 fun setup() {
@@ -66,8 +61,9 @@ fun reload() {
     pluginConfiguration = YamlConfiguration.loadConfiguration(configFile)
     languageConfiguration = YamlConfiguration.loadConfiguration(languageFile)
 
-    sayDistance = pluginConfiguration.getInt("distance", 15)
-    successChange = pluginConfiguration.getInt("success_change", 50)
-    maxDices = pluginConfiguration.getInt("max_dices", 100)
-    maxSides = pluginConfiguration.getInt("max_sides", 255)
+    settings.sayDistance = pluginConfiguration.getInt("hear_distance", 30)
+    settings.successChange = pluginConfiguration.getInt("success_change", 50)
+    settings.maxDices = pluginConfiguration.getInt("max_dices", 100)
+    settings.maxSides = pluginConfiguration.getInt("max_sides", 255)
+    settings.maxLeashDistance = pluginConfiguration.getInt("leash_distance", 15)
 }

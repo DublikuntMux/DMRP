@@ -1,5 +1,5 @@
 # Player command output hear distance in blocks
-distance: 15
+hear_distance: 30
 # Change to get success on try command
 success_change: 50
 
@@ -7,3 +7,6 @@ success_change: 50
 max_dices: 100
 # Max sides in dice
 max_sides: 255
+
+# Max leash distance.
+leash_distance: 15

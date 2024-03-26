@@ -1,3 +1,6 @@
+import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask
+import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask.JarUrl
+
 buildscript {
     repositories {
         mavenCentral()
@@ -6,7 +9,9 @@ buildscript {
 
 plugins {
     kotlin("jvm")
+
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("dev.s7a.gradle.minecraft.server") version "3.0.0"
 }
 
 group = "com.dublikunt"
@@ -29,18 +34,20 @@ repositories {
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://oss.sonatype.org/content/groups/public/")
+
     maven ("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    compileOnly("org.spigotmc", "spigot-api", "$mcApiVersion+")
+    compileOnly("org.spigotmc", "spigot-api", "1.20.1-R0.1-SNAPSHOT")
 
-    implementation("net.kyori", "adventure-platform-bukkit", adventurePlatformVersion)
-    implementation("net.kyori", "adventure-text-minimessage", minimessageVersion)
-    implementation("org.bstats", "bstats-bukkit", bstatsVersion)
-
+    compileOnly("net.kyori", "adventure-platform-bukkit", adventurePlatformVersion)
+    compileOnly("net.kyori", "adventure-text-minimessage", minimessageVersion)
     compileOnly("me.clip", "placeholderapi", placeholderVersion)
+
+    implementation("org.bstats", "bstats-bukkit", bstatsVersion)
 }
 
 tasks {
@@ -70,7 +77,6 @@ tasks {
             "org/jetbrains/annotations/**",
             "META-INF/**",
             "kotlin/**",
-            "net/kyori/**",
         )
         mergeServiceFiles()
 
@@ -81,4 +87,18 @@ tasks {
             relocate(pack, "$prefix.$pack")
         }
     }
+}
+
+task<LaunchMinecraftServerTask>("testPlugin") {
+    dependsOn("shadowJar")
+
+    doFirst {
+        copy {
+            from(layout.buildDirectory.file("libs/${project.name}-${project.version}-all.jar"))
+            into(layout.buildDirectory.file("MinecraftServer/plugins"))
+        }
+    }
+
+    jarUrl.set(JarUrl.Paper("1.20.4"))
+    agreeEula.set(true)
 }

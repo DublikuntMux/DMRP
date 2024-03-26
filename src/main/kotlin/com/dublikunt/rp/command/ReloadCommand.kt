@@ -1,8 +1,8 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.languageConfiguration
-import com.dublikunt.rp.reload
-import com.dublikunt.rp.say
+import com.dublikunt.rp.config.languageConfiguration
+import com.dublikunt.rp.config.reload
+import com.dublikunt.rp.util.say
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender

@@ -1,6 +1,9 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.*
+import com.dublikunt.rp.config.languageConfiguration
+import com.dublikunt.rp.config.settings
+import com.dublikunt.rp.localRandom
+import com.dublikunt.rp.util.say
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -19,7 +22,7 @@ class DiceCommand : CommandExecutor, TabExecutor {
                 return true
             } else if (args.size == 1) {
                 val numDices = args[0].toIntOrNull()
-                if (numDices == null || numDices <= 0 || numDices > maxDices) {
+                if (numDices == null || numDices <= 0 || numDices > settings.maxDices) {
                     val output = languageConfiguration.getString("message.dice.error_amount")!!
                     say(sender.location, output)
                     return false
@@ -33,7 +36,7 @@ class DiceCommand : CommandExecutor, TabExecutor {
             } else {
                 val numDices = args[0].toIntOrNull()
                 val sides = args[1].toIntOrNull()
-                if (numDices == null || sides == null || numDices <= 0 || sides <= 0 || sides > maxSides || numDices > maxDices) {
+                if (numDices == null || sides == null || numDices <= 0 || sides <= 0 || sides > settings.maxSides || numDices > settings.maxDices) {
                     val output = languageConfiguration.getString("message.dice.error_sides")!!
                     say(sender.location, output)
                     return false
@@ -66,9 +69,9 @@ class DiceCommand : CommandExecutor, TabExecutor {
         val complete: MutableList<String> = mutableListOf()
 
         if (args.size == 1) {
-            complete.addAll(listOf("1", "2", "3", "4", "5", "6", maxDices.toString()))
+            complete.addAll(listOf("1", "2", "3", "4", "5", "6", settings.maxDices.toString()))
         } else if (args.size == 2) {
-            complete.addAll(listOf("4", "6", "12", "20", "100", maxSides.toString()))
+            complete.addAll(listOf("4", "6", "12", "20", "100", settings.maxSides.toString()))
         }
 
         return complete

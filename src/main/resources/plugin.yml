@@ -3,7 +3,7 @@ main: com.dublikunt.rp.DMRP
 version: "${version}"
 api-version: "${apiVersion}"
 prefix: DMRP
-load: STARTUP
+load: POSTWORLD
 description: "Plugin that add new role play commands and mechanics to you server."
 website: https://github.com/DublikuntMux/DMRP
 authors: [ "Dublikunt Max" ]
@@ -26,6 +26,13 @@ commands:
     usage: /dice [amount] [sides]
 
 permissions:
+  dmrp.leash.can:
+    description: Gives access to can be leashed
+    default: true
+  dmrp.leash.use:
+    description: Gives access to leash players
+    default: op
+
   dmrp.command.*:
     description: Gives access to all DMRP commands
     default: op
@@ -38,8 +45,10 @@ permissions:
     default: op
   dmrp.command.try:
     description: Has permission to try command
+    default: true
   dmrp.command.dice:
     description: Has permission to try command
+    default: true
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}

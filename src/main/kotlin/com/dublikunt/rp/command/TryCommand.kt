@@ -1,9 +1,9 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.languageConfiguration
-import com.dublikunt.rp.replacePlaceholders
-import com.dublikunt.rp.say
-import com.dublikunt.rp.successChange
+import com.dublikunt.rp.config.languageConfiguration
+import com.dublikunt.rp.config.settings
+import com.dublikunt.rp.util.replacePlaceholders
+import com.dublikunt.rp.util.say
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -17,7 +17,7 @@ class TryCommand : CommandExecutor, TabExecutor {
             if (args.isEmpty()) {
                 say(sender, languageConfiguration.getString("message.try.error")!!)
             } else {
-                val x = ThreadLocalRandom.current().nextInt(100) + 1 <= successChange
+                val x = ThreadLocalRandom.current().nextInt(100) + 1 <= settings.successChange
                 val massage: String
                 val who: String = sender.displayName
                 val what = args.joinToString(" ")

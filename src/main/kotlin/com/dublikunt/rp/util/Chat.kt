@@ -1,5 +1,9 @@
-package com.dublikunt.rp
+package com.dublikunt.rp.util
 
+import com.dublikunt.rp.DMRP
+import com.dublikunt.rp.config.languageConfiguration
+import com.dublikunt.rp.config.settings
+import com.dublikunt.rp.config.usePlaceholders
 import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.platform.AudienceProvider
@@ -15,7 +19,7 @@ private val provider: AudienceProvider = BukkitAudiences.create(DMRP.getInstance
 fun say(location: Location, text: String) {
     for (player in Bukkit.getOnlinePlayers()) {
         val playerLocation = player.location
-        if (playerLocation.distanceSquared(location) <= sayDistance * sayDistance) {
+        if (playerLocation.distanceSquared(location) <= settings.sayDistance * settings.sayDistance) {
             say(player, text)
         }
     }
@@ -37,12 +41,4 @@ fun say(text: String) {
 fun say(audience: Audience, text: String) {
     val prefixed = languageConfiguration.getString("prefix") + " > " + text
     audience.sendMessage(mm.deserialize(prefixed))
-}
-
-fun replacePlaceholders(input: String, placeholders: Map<String, String>): String {
-    var result = input
-    placeholders.forEach { (key, value) ->
-        result = result.replace("%$key%", value)
-    }
-    return result
 }
