@@ -11,11 +11,11 @@ plugins {
     kotlin("jvm")
 
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("dev.s7a.gradle.minecraft.server") version "3.0.0"
+    id("dev.s7a.gradle.minecraft.server") version "3.2.1"
 }
 
 group = "com.dublikunt"
-version = "1.3.0"
+version = "1.4.0"
 
 val mcApiVersion: String by project
 val adventurePlatformVersion: String by project
@@ -43,7 +43,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    compileOnly("org.spigotmc", "spigot-api", "1.20.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc", "spigot-api", "1.21.5-R0.1-SNAPSHOT")
 
     compileOnly("net.kyori", "adventure-platform-bukkit", adventurePlatformVersion)
     compileOnly("net.kyori", "adventure-text-minimessage", minimessageVersion)
@@ -57,7 +57,7 @@ dependencies {
 
 tasks {
     wrapper {
-        gradleVersion = "8.7"
+        gradleVersion = "8.11"
         distributionType = Wrapper.DistributionType.ALL
     }
 
@@ -106,6 +106,6 @@ task<LaunchMinecraftServerTask>("testPlugin") {
         }
     }
 
-    jarUrl.set(JarUrl.Paper("1.20.4"))
+    jarUrl.set(JarUrl.Paper("1.21.5"))
     agreeEula.set(true)
 }

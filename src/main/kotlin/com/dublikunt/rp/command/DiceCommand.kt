@@ -11,9 +11,9 @@ import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 
 class DiceCommand : CommandExecutor, TabExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         if (sender is Player) {
-            if (args.isEmpty()) {
+            if (args.isNullOrEmpty()) {
                 val output = String.format(
                     languageConfiguration.getString("message.dice.throw_one")!!,
                     sender.displayName

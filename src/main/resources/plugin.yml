@@ -24,6 +24,16 @@ commands:
     permission: dmrp.command.dice
     permission-message: §3DMRP §f> You do not have permission to do that.
     usage: /dice [amount] [sides]
+  coinflip:
+    description: "make coin flip with 50/50 chance"
+    permission: dmrp.command.coinflip
+    permission-message: §3DMRP §f> You do not have permission to do that.
+    usage: /coinflip
+  lockinv:
+    description: "Locks/unlocks player inventory"
+    permission: dmrp.command.lockinv
+    permission-message: §3DMRP §f> You do not have permission to do that.
+    usage: /lockinv [player]
 
 permissions:
   dmrp.leash.can:
@@ -40,6 +50,8 @@ permissions:
       dmrp.command.reload: true
       dmrp.command.try: true
       dmrp.command.dice: true
+      dmrp.command.coinflip: true
+      dmrp.command.lockinv: true
   dmrp.command.reload:
     description: Has permission to reload plugin
     default: op
@@ -48,6 +60,12 @@ permissions:
     default: true
   dmrp.command.dice:
     description: Has permission to try command
+    default: true
+  dmrp.command.coinflip:
+    description: Has permission to coinflip command
+    default: true
+  dmrp.command.lockinv:
+    description: Has permission to lock inventory command
     default: true
 
 libraries:

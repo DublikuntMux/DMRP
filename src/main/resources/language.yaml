@@ -1,11 +1,11 @@
 # Support MiniMassages and PlaceholderAPI
-prefix: "DMRP"
+prefix: "<b><yellow>DMRP</yellow></b>"
 
 message:
   try:
-    successful: "%who% %what% successful." # %who% - player name, %what% - what say
-    unsuccessful: "%who% %what% unsuccessful." # %who% - player name, %what% - what say
-    error: "No try text specified."
+    successful: "%who% %what% <green>successful</green>." # %who% - player name, %what% - what say
+    unsuccessful: "%who% %what% <red>unsuccessful</red>." # %who% - player name, %what% - what say
+    error: "<red>No try text specified.</red>"
     suggestion: # suggestion for try command (can be null)
       - "crack lock"
       - "secretly took out item"
@@ -14,7 +14,28 @@ message:
   dice:
     throw_one: "%s throw dice and have: " # s% - player name
     throw_many: "%s throw dices and have: " # s% - player name
-    error_amount: "Invalid input for number of dices"
-    error_sides: "Invalid input for number of sides"
+    error_amount: "<red>Invalid input for number of dices.</red>"
+    error_sides: "<red>Invalid input for number of sides.</red>"
 
-  reload: "Config reloaded!"
+  coinflip:
+    heads: "%s flip coin and get <blue>heads</blue>." # s% - player name
+    tails: "%s flip coin and get <red>tails</red>." # s% - player name
+
+  inventory_lock:
+    error: "<red>You must provide the player with inventory that will be locked.</red>"
+    on_move: "<red>Your inventory is locked.</red>"
+    lock: "Inventory <yellow>locked</yellow> for %s"
+    unlock: "Inventory <green>unlocked</green> for %s"
+    too_far: "Target is too far away."
+
+  reload: "Config <green>reloaded!</green>"
+
+# Not support MiniMassages and PlaceholderAPI
+placeholder:
+  leash:
+    leashed: "Leashed"
+    not_leashed: "Not leashed"
+
+  lockinv:
+    locked: "Locked"
+    unlocked: "Unlocked"

@@ -65,6 +65,7 @@ class PlayerLeashListener : Listener {
                         slime.setGravity(false)
                         slime.setLeashHolder(event.player)
                         slime.isInvulnerable = true
+                        slime.isSilent = true
                         slime.isInvisible = true
                         slime.canPickupItems = false
 

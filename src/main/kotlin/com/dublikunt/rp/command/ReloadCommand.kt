@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class ReloadCommand : CommandExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         reload()
 
         say(languageConfiguration.getString("message.reload")!!)

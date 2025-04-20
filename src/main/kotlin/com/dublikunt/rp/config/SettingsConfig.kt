@@ -10,4 +10,6 @@ data object SettingsConfig {
     var maxSides: Int = 50
 
     var maxLeashDistance: Int = 15
+
+    var lockDistance: Int = 5
 }

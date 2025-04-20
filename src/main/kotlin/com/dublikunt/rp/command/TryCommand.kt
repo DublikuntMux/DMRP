@@ -12,9 +12,9 @@ import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom
 
 class TryCommand : CommandExecutor, TabExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         if (sender is Player) {
-            if (args.isEmpty()) {
+            if (args.isNullOrEmpty()) {
                 say(sender, languageConfiguration.getString("message.try.error")!!)
             } else {
                 val x = ThreadLocalRandom.current().nextInt(100) + 1 <= settings.successChange

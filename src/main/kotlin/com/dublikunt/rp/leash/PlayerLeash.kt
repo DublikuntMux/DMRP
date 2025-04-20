@@ -5,12 +5,12 @@ import com.dublikunt.rp.config.settings
 import com.dublikunt.rp.util.UtilEventListener
 import com.dublikunt.rp.util.pushEntity
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 
 val sessions: MutableList<LeashSession> = emptyList<LeashSession>().toMutableList()
 val collisionTeam = CollisionTeam()
 
-fun getSession(player: Player): LeashSession? {
+fun getSession(player: OfflinePlayer): LeashSession? {
     for (session in sessions) {
         if (session.owner === player || session.leashed === player) {
             return session
@@ -19,7 +19,7 @@ fun getSession(player: Player): LeashSession? {
     return null
 }
 
-fun hasSession(player: Player): Boolean {
+fun hasSession(player: OfflinePlayer): Boolean {
     for (session in sessions) {
         if (session.owner === player || session.leashed === player) {
             return true

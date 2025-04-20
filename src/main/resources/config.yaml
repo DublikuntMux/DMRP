@@ -13,3 +13,6 @@ max_sides: 255
 
 # Max leash distance.
 leash_distance: 15
+
+# Maximum how many blocks do you need to be from a player to lock him
+lock_distance: 5

@@ -1,5 +1,6 @@
 package com.dublikunt.rp.config
 
+import com.dublikunt.rp.DMPlaceholders
 import com.dublikunt.rp.DMRP
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
@@ -52,6 +53,7 @@ fun setup() {
 
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
         usePlaceholders = true
+        DMPlaceholders().register()
     }
 
     reload()
@@ -70,4 +72,6 @@ fun reload() {
     settings.maxSides = pluginConfiguration.getInt("max_sides", 255)
 
     settings.maxLeashDistance = pluginConfiguration.getInt("leash_distance", 15)
+
+    settings.lockDistance = pluginConfiguration.getInt("lock_distance", 5)
 }

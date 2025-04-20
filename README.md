@@ -16,17 +16,20 @@ DMRP is a Minecraft plugin designed to enhance role-playing experiences on your 
 <img alt="sponge" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/unsupported/sponge_vector.svg"/>
 
 ## Features
-- **Player Leash**: Allow player leash each other using leash.
+
+- **Player Leash**: Allow players to leash each other using a leash.
 - **Dice Command**: Allows players to throw dice with a specified number of sides. Players can throw a single die or multiple dice at once.
 - **Try Command**: Gives players a customizable chance to succeed in a specified action. This can be used for various role-playing scenarios.
+- **Coinflip Command**: Simulates a coin flip with a 50/50 chance of landing on heads or tails.
+- **Inventory Lock**: Allows locking and unlocking of player inventories, preventing them from moving items.
 - **Reload Command**: Reloads the plugin's configuration files, allowing changes to take effect without restarting the server.
 - **Support for PlaceholderAPI**: If installed, DMRP can use placeholders to customize messages further.
 - **Support for MiniMassages**: DMRP can use MiniMassages format to customize messages further.
-- **Auto update**: Automatically check for plugin update.
+- **Custom Placeholders**: Introduces new custom placeholders that allow server administrators to dynamically display plugin-specific data, such as player state.
+- **Auto Update**: Automatically checks for plugin updates.
 
 See command showcase on:  
 [![modrinth-gallery](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/modrinth-gallery_vector.svg)](https://modrinth.com/plugin/dmrp/gallery)
-
 
 ## Installation
 
@@ -38,18 +41,46 @@ See command showcase on:
 
 DMRP uses two configuration files: `config.yaml` and `language.yaml`. These files are located in the plugin's directory under `plugins/DMRP/`.
 
-- `config.yaml`: Contains settings such as the distance at which player command outputs are heard.
-- `language.yaml`: Contains messages used by the plugin.
+- `config.yaml`: Contains settings such as the distance at which player command outputs are heard, maximum dice sides, and leash distance.
+- `language.yaml`: Contains messages used by the plugin, which can be customized to fit your server's theme.
 
 ## Commands
 
 - **/rp-reload**: Reloads the plugin's configuration files.
 - **/try {what to try}**: Attempts a specified action with a configured chance of success.
 - **/dice {amount} {sides}**: Throws a specified number of dice with a specified number of sides.
+- **/coinflip**: Simulates a coin flip with a 50/50 chance.
+- **/lockinv {player}**: Locks or unlocks the inventory of a specified player.
+
+## Custom Placeholders
+
+DMRP introduces custom placeholders that allow server administrators to dynamically display plugin-specific data. These placeholders can be used with PlaceholderAPI to enhance the role-playing experience. Below is a description of each placeholder:
+
+- **%dmrp_leashed%**: Displays whether a player is currently leashed.  
+  - Returns a customizable message based on the player's leash status:
+    - If the player is leashed: Displays the message defined in `placeholder.leash.leashed` in the `language.yaml` file.
+    - If the player is not leashed: Displays the message defined in `placeholder.leash.not_leashed`.
+
+- **%dmrp_lockinv%**: Displays whether a player's inventory is locked.  
+  - Returns a customizable message based on the player's inventory lock status:
+    - If the player's inventory is locked: Displays the message defined in `placeholder.lockinv.locked` in the `language.yaml` file.
+    - If the player's inventory is unlocked: Displays the message defined in `placeholder.lockinv.unlocked`.
+
+These placeholders can be customized in the `language.yaml` file to fit your server's theme and enhance immersion.
 
 ## Permissions
 
 DMRP uses a permission system to control access to its commands. By default, all commands (except /rp-reload) are restricted to all users. You can customize these permissions in your server's `permissions.yml` file.
+
+### Permission Nodes
+
+- `dmrp.command.reload`: Access to reload the plugin configuration.
+- `dmrp.command.try`: Access to the `/try` command.
+- `dmrp.command.dice`: Access to the `/dice` command.
+- `dmrp.command.coinflip`: Access to the `/coinflip` command.
+- `dmrp.command.lockinv`: Access to the `/lockinv` command.
+- `dmrp.leash.use`: Allows players to leash others.
+- `dmrp.leash.can`: Allows players to be leashed.
 
 ## Support
 
