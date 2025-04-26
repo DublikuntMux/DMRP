@@ -1,17 +1,7 @@
-import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask
-import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask.JarUrl
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
-    kotlin("jvm")
-
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("dev.s7a.gradle.minecraft.server") version "3.2.1"
+    kotlin("jvm") version "2.2.0-Beta1"
+    id("com.gradleup.shadow") version "8.3.0"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.dublikunt"
@@ -26,12 +16,6 @@ val kotlinVersion: String by project
 val okhttpVersion: String by project
 val orgJsonVersion: String by project
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 repositories {
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -42,8 +26,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    compileOnly("org.spigotmc", "spigot-api", "1.21.5-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     compileOnly("net.kyori", "adventure-platform-bukkit", adventurePlatformVersion)
     compileOnly("net.kyori", "adventure-text-minimessage", minimessageVersion)
@@ -56,28 +40,38 @@ dependencies {
 }
 
 tasks {
-    wrapper {
-        gradleVersion = "8.11"
-        distributionType = Wrapper.DistributionType.ALL
+    runServer {
+        minecraftVersion("1.21")
     }
+}
 
-    processResources {
-        val placeholders = mapOf(
-            "version" to version,
-            "apiVersion" to mcApiVersion,
-            "kotlinVersion" to kotlinVersion,
-            "adventurePlatformVersion" to adventurePlatformVersion,
-            "minimessageVersion" to minimessageVersion,
-            "okhttpVersion" to okhttpVersion,
-            "orgJsonVersion" to orgJsonVersion,
-        )
+val targetJavaVersion = 21
+kotlin {
+    jvmToolchain(targetJavaVersion)
+}
 
-        filesMatching("plugin.yml") {
-            expand(placeholders)
-        }
+tasks.build {
+    dependsOn("shadowJar")
+}
+
+tasks.processResources {
+    val props = mapOf(
+        "version" to version,
+        "apiVersion" to mcApiVersion,
+        "kotlinVersion" to kotlinVersion,
+        "adventurePlatformVersion" to adventurePlatformVersion,
+        "minimessageVersion" to minimessageVersion,
+        "okhttpVersion" to okhttpVersion,
+        "orgJsonVersion" to orgJsonVersion,
+    )
+    inputs.properties(props)
+    filteringCharset = "UTF-8"
+    filesMatching("plugin.yml") {
+        expand(props)
     }
+}
 
-    shadowJar {
+tasks.shadowJar {
         minimize()
         exclude(
             "org/intellij/lang/annotations/**",
@@ -93,19 +87,4 @@ tasks {
         ).forEach { pack ->
             relocate(pack, "$prefix.$pack")
         }
-    }
-}
-
-task<LaunchMinecraftServerTask>("testPlugin") {
-    dependsOn("shadowJar")
-
-    doFirst {
-        copy {
-            from(layout.buildDirectory.file("libs/${project.name}-${project.version}-all.jar"))
-            into(layout.buildDirectory.file("MinecraftServer/plugins"))
-        }
-    }
-
-    jarUrl.set(JarUrl.Paper("1.21.5"))
-    agreeEula.set(true)
 }

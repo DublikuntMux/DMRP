@@ -1,5 +1,6 @@
 package com.dublikunt.rp.util
 
+import com.dublikunt.rp.DMRP
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -49,7 +50,7 @@ fun isNewerVersion(currentVersion: String, latestVersion: String): Boolean {
 
 fun checkForUpdate() {
     val lastVersion = getLatestVersion()
-    val currentVersion = "1.3.0"
+    val currentVersion = DMRP.getInstance().description.version
 
     if (isNewerVersion(currentVersion, lastVersion)) {
         say("New update available: $currentVersion -> $lastVersion")
