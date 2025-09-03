@@ -4,16 +4,15 @@ import com.dublikunt.rp.command.*
 import com.dublikunt.rp.config.settings
 import com.dublikunt.rp.config.setup
 import com.dublikunt.rp.leash.enableLeash
-import com.dublikunt.rp.locker.enableInventoryLock
+import com.dublikunt.rp.locker.enableInventoryLocker
 import com.dublikunt.rp.util.checkForUpdate
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
 class DMRP : JavaPlugin() {
     override fun onEnable() {
-        setup()
-
         Metrics(this, 21382)
+        setup()
 
         if (settings.update)
             checkForUpdate()
@@ -31,8 +30,11 @@ class DMRP : JavaPlugin() {
         getCommand("lockinv")!!.setExecutor(LockerCommand())
         getCommand("lockinv")!!.tabCompleter = LockerCommand()
 
+        getCommand("leash")!!.setExecutor(LeashCommand())
+        getCommand("leash")!!.tabCompleter = LeashCommand()
+
         enableLeash()
-        enableInventoryLock()
+        enableInventoryLocker()
     }
 
     companion object {

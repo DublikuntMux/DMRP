@@ -1,8 +1,8 @@
 package com.dublikunt.rp
 
 import com.dublikunt.rp.config.languageConfiguration
-import com.dublikunt.rp.leash.hasSession
-import com.dublikunt.rp.locker.lockedPlayers
+import com.dublikunt.rp.leash.hasLeashSession
+import com.dublikunt.rp.locker.hasLockSession
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 
@@ -30,7 +30,7 @@ class DMPlaceholders : PlaceholderExpansion() {
         }
 
         if (params.equals("leashed", ignoreCase = true)) {
-            return if (hasSession(player)) {
+            return if (hasLeashSession(player)) {
                 languageConfiguration.getString("placeholder.leash.leashed")!!
             } else {
                 languageConfiguration.getString("placeholder.leash.not_leashed")!!
@@ -38,7 +38,7 @@ class DMPlaceholders : PlaceholderExpansion() {
         }
 
         if (params.equals("lockinv", ignoreCase = true)) {
-            return if (lockedPlayers.contains(player.name)) {
+            return if (hasLockSession(player)) {
                 languageConfiguration.getString("placeholder.lockinv.locked")!!
             } else {
                 languageConfiguration.getString("placeholder.lockinv.unlocked")!!

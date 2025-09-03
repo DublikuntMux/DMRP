@@ -34,8 +34,26 @@ commands:
     permission: dmrp.command.lockinv
     permission-message: §3DMRP §f> You do not have permission to do that.
     usage: /lockinv [player]
+  leash:
+    description: "Leashes/unleashes a player"
+    permission: dmrp.command.leash
+    permission-message: §3DMRP §f> You do not have permission to do that.
+    usage: /leash [player]
 
 permissions:
+  dmrp.lock.admin:
+    description: Gives access to unlock inventories that you don't own
+    default: op
+  dmrp.lock.can:
+    description: Gives access to can be inventory locked
+    default: true
+  dmrp.lock.use:
+    description: Gives access to lock players inventories
+    default: op
+
+  dmrp.leash.admin:
+    description: Gives access to unleash players that you don't own
+    default: op
   dmrp.leash.can:
     description: Gives access to can be leashed
     default: true
@@ -52,6 +70,7 @@ permissions:
       dmrp.command.dice: true
       dmrp.command.coinflip: true
       dmrp.command.lockinv: true
+      dmrp.command.leash: true
   dmrp.command.reload:
     description: Has permission to reload plugin
     default: op
@@ -59,14 +78,17 @@ permissions:
     description: Has permission to try command
     default: true
   dmrp.command.dice:
-    description: Has permission to try command
+    description: Has permission to dice command
     default: true
   dmrp.command.coinflip:
-    description: Has permission to coinflip command
+    description: Has permission to coin flip command
     default: true
   dmrp.command.lockinv:
     description: Has permission to lock inventory command
-    default: true
+    default: op
+  dmrp.command.leash:
+    description: Has permission to leash player command
+    default: op
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}

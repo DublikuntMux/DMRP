@@ -16,11 +16,16 @@ class InventoryLockListener : Listener {
     fun onInventoryClick(event: InventoryClickEvent) {
         val player = event.whoClicked
         if (player is Player) {
-            if (lockedPlayers.contains(player.name)) {
-                if (event.view.topInventory == event.clickedInventory || event.clickedInventory != null) {
-                    event.isCancelled = true
-                    say(player, languageConfiguration.getString("message.inventory_lock.on_move")!!)
-                }
+            val session = getSession(player)
+            if (session == null)
+                return
+
+            if (session.locked != player)
+                return
+
+            if (event.view.topInventory == event.clickedInventory || event.clickedInventory != null) {
+                event.isCancelled = true
+                say(player, languageConfiguration.getString("message.inventory_lock.on_move")!!)
             }
         }
     }
@@ -29,22 +34,29 @@ class InventoryLockListener : Listener {
     fun onInventoryDrag(event: InventoryDragEvent) {
         val player = event.whoClicked
         if (player is Player) {
-            if (lockedPlayers.contains(player.name)) {
-                event.isCancelled = true
-                say(player, languageConfiguration.getString("message.inventory_lock.on_move")!!)
-            }
+            val session = getSession(player)
+            if (session == null)
+                return
+
+            if (session.locked != player)
+                return
+
+            event.isCancelled = true
+            say(player, languageConfiguration.getString("message.inventory_lock.on_move")!!)
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        if (lockedPlayers.contains(event.player.name))
-            lockedPlayers.remove(event.player.name)
+        if (hasLockSession(event.player)) {
+            removeSession(getSession(event.player)!!)
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerDeath(event: PlayerDeathEvent) {
-        if (lockedPlayers.contains(event.entity.name))
-            lockedPlayers.remove(event.entity.name)
+        if (hasLockSession(event.entity)) {
+            removeSession(getSession(event.entity)!!)
+        }
     }
 }

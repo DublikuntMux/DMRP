@@ -2,7 +2,7 @@ package com.dublikunt.rp.command
 
 import com.dublikunt.rp.config.languageConfiguration
 import com.dublikunt.rp.config.settings
-import com.dublikunt.rp.locker.lockedPlayers
+import com.dublikunt.rp.locker.*
 import com.dublikunt.rp.util.say
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -13,17 +13,28 @@ import org.bukkit.entity.Player
 
 class LockerCommand : CommandExecutor, TabExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
-        if (args.isNullOrEmpty()) {
-            if (sender is Player) {
-                say(sender, languageConfiguration.getString("message.inventory_lock.error")!!)
-            }
+        if (sender !is Player) {
+            sender.sendMessage("This command can only be run by a player.")
             return true
         }
 
-        val playerName = args[0]
-        val target = Bukkit.getPlayerExact(playerName)
+        if (!sender.hasPermission("dmrp.lock.use")) {
+            say(sender, languageConfiguration.getString("message.inventory_lock.no_permission")!!)
+            return true
+        }
 
-        if (sender is Player && target != null && sender != target) {
+        if (args.isNullOrEmpty()) {
+            say(sender, languageConfiguration.getString("message.inventory_lock.error")!!)
+            return true
+        }
+
+        val target = Bukkit.getPlayerExact(args[0])
+        if (target == null) {
+            say(sender, languageConfiguration.getString("message.inventory_lock.not_found")!!)
+            return true
+        }
+
+        if (sender != target) {
             val distance = sender.location.distanceSquared(target.location)
             if (distance > settings.lockDistance * settings.lockDistance) {
                 say(sender, languageConfiguration.getString("message.inventory_lock.too_far")!!)
@@ -31,28 +42,39 @@ class LockerCommand : CommandExecutor, TabExecutor {
             }
         }
 
-        if (lockedPlayers.contains(playerName)) {
-            lockedPlayers.remove(playerName)
-            if (sender is Player) {
+        if (hasLockSession(target)) {
+            val session = getSession(target)!!
+            if (session.owner == sender || sender.hasPermission("dmrp.lock.admin")) {
+                removeSession(session)
                 say(
-                    sender.location,
+                    sender,
+                    String.format(languageConfiguration.getString("message.inventory_lock.unlock_owner")!!, target.name)
+                )
+                say(
+                    target,
                     String.format(
-                        languageConfiguration.getString("message.inventory_lock.unlock")!!,
-                        sender.displayName
+                        languageConfiguration.getString("message.inventory_lock.unlock_target")!!,
+                        sender.name
                     )
                 )
+            } else {
+                say(sender, languageConfiguration.getString("message.inventory_lock.not_owner")!!)
             }
         } else {
-            lockedPlayers.add(playerName)
-            if (sender is Player) {
-                say(
-                    sender.location,
-                    String.format(
-                        languageConfiguration.getString("message.inventory_lock.lock")!!,
-                        sender.displayName
-                    )
-                )
+            if (!target.hasPermission("dmrp.lock.can")) {
+                say(sender, languageConfiguration.getString("message.inventory_lock.cannot_lock")!!)
+                return true
             }
+            val session = InventoryLockSession(sender, target)
+            addSession(session)
+            say(
+                sender,
+                String.format(languageConfiguration.getString("message.inventory_lock.lock_owner")!!, target.name)
+            )
+            say(
+                target,
+                String.format(languageConfiguration.getString("message.inventory_lock.lock_target")!!, sender.name)
+            )
         }
 
         return true

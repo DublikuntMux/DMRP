@@ -18,10 +18,10 @@ DMRP is a Minecraft plugin designed to enhance role-playing experiences on your 
 ## Features
 
 - **Player Leash**: Allow players to leash each other using a leash.
+- **Inventory Lock**: Allows locking and unlocking of player inventories, preventing them from moving items using a chain.
 - **Dice Command**: Allows players to throw dice with a specified number of sides. Players can throw a single die or multiple dice at once.
 - **Try Command**: Gives players a customizable chance to succeed in a specified action. This can be used for various role-playing scenarios.
 - **Coinflip Command**: Simulates a coin flip with a 50/50 chance of landing on heads or tails.
-- **Inventory Lock**: Allows locking and unlocking of player inventories, preventing them from moving items.
 - **Reload Command**: Reloads the plugin's configuration files, allowing changes to take effect without restarting the server.
 - **Support for PlaceholderAPI**: If installed, DMRP can use placeholders to customize messages further.
 - **Support for MiniMassages**: DMRP can use MiniMassages format to customize messages further.

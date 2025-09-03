@@ -21,12 +21,28 @@ message:
     heads: "%s flip coin and get <blue>heads</blue>." # s% - player name
     tails: "%s flip coin and get <red>tails</red>." # s% - player name
 
+  leash:
+    error: "<red>You must provide a player to leash.</red>"
+    not_found: "<red>Player not found.</red>"
+    too_far: "<red>Target is too far away.</red>"
+    not_owner: "<red>You are not the owner of this leash.</red>"
+    unleash_owner: "<green>You have unleashed %s.</green>"
+    unleash_target: "<green>You have been unleashed by %s.</green>"
+    leash_owner: "<yellow>You have leashed %s.</yellow>"
+    leash_target: "<yellow>You have been leashed by %s.</yellow>"
+
   inventory_lock:
-    error: "<red>You must provide the player with inventory that will be locked.</red>"
+    error: "<red>You must provide a player to lock.</red>"
     on_move: "<red>Your inventory is locked.</red>"
-    lock: "Inventory <yellow>locked</yellow> for %s"
-    unlock: "Inventory <green>unlocked</green> for %s"
-    too_far: "Target is too far away."
+    not_found: "<red>Player not found.</red>"
+    not_owner: "<red>You are not the owner of this lock.</red>"
+    unlock_owner: "<green>You have unlocked the inventory of %s.</green>"
+    unlock_target: "<green>Your inventory has been unlocked by %s.</green>"
+    lock_owner: "<yellow>You have locked the inventory of %s.</yellow>"
+    lock_target: "<yellow>Your inventory has been locked by %s.</yellow>"
+    too_far: "<red>Target is too far away.</red>"
+    no_permission: "<red>You don't have permission to lock inventories.</red>"
+    cannot_lock: "<red>You cannot lock this player's inventory.</red>"
 
   reload: "Config <green>reloaded!</green>"
 

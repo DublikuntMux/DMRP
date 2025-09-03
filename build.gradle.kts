@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm") version "2.2.0-Beta1"
-    id("com.gradleup.shadow") version "8.3.0"
+    kotlin("jvm") version "2.2.20-RC2"
+    id("com.gradleup.shadow") version "9.1.0"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.dublikunt"
-version = "1.4.0"
+version = "1.5.0"
 
 val mcApiVersion: String by project
 val adventurePlatformVersion: String by project
@@ -21,12 +21,11 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://oss.sonatype.org/content/groups/public/")
-
-    maven ("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     compileOnly("net.kyori", "adventure-platform-bukkit", adventurePlatformVersion)
@@ -41,7 +40,7 @@ dependencies {
 
 tasks {
     runServer {
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.8")
     }
 }
 
