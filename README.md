@@ -21,7 +21,7 @@ DMRP is a Minecraft plugin designed to enhance role-playing experiences on your 
 - **Inventory Lock**: Allows locking and unlocking of player inventories, preventing them from moving items using a chain.
 - **Dice Command**: Allows players to throw dice with a specified number of sides. Players can throw a single die or multiple dice at once.
 - **Try Command**: Gives players a customizable chance to succeed in a specified action. This can be used for various role-playing scenarios.
-- **Coinflip Command**: Simulates a coin flip with a 50/50 chance of landing on heads or tails.
+- **Coin flip Command**: Simulates a coin flip with a 50/50 chance of landing on heads or tails.
 - **Reload Command**: Reloads the plugin's configuration files, allowing changes to take effect without restarting the server.
 - **Support for PlaceholderAPI**: If installed, DMRP can use placeholders to customize messages further.
 - **Support for MiniMassages**: DMRP can use MiniMassages format to customize messages further.
@@ -41,7 +41,7 @@ See command showcase on:
 
 DMRP uses two configuration files: `config.yaml` and `language.yaml`. These files are located in the plugin's directory under `plugins/DMRP/`.
 
-- `config.yaml`: Contains settings such as the distance at which player command outputs are heard, maximum dice sides, and leash distance.
+- `config.yaml`: Contains settings such as the maximum dice sides, and leash distance.
 - `language.yaml`: Contains messages used by the plugin, which can be customized to fit your server's theme.
 
 ## Commands
@@ -51,6 +51,7 @@ DMRP uses two configuration files: `config.yaml` and `language.yaml`. These file
 - **/dice {amount} {sides}**: Throws a specified number of dice with a specified number of sides.
 - **/coinflip**: Simulates a coin flip with a 50/50 chance.
 - **/lockinv {player}**: Locks or unlocks the inventory of a specified player.
+- **/leash {player}**: Leashes/unleashes a player.
 
 ## Custom Placeholders
 
@@ -74,13 +75,21 @@ DMRP uses a permission system to control access to its commands. By default, all
 
 ### Permission Nodes
 
+- `dmrp.command.*`: Gives access to all DMRP commands.
 - `dmrp.command.reload`: Access to reload the plugin configuration.
 - `dmrp.command.try`: Access to the `/try` command.
 - `dmrp.command.dice`: Access to the `/dice` command.
 - `dmrp.command.coinflip`: Access to the `/coinflip` command.
 - `dmrp.command.lockinv`: Access to the `/lockinv` command.
+- `dmrp.command.leash`: Access to the `/leash` command.
+
 - `dmrp.leash.use`: Allows players to leash others.
 - `dmrp.leash.can`: Allows players to be leashed.
+- `dmrp.leash.admin`: Gives access to unleash players that you don't own.
+
+- `dmrp.lock.use`: Gives access to lock players inventories.
+- `dmrp.lock.can`: Allows players to be inventory locked.
+- `dmrp.lock.admin`: Gives access to unlock inventories that you don't own.
 
 ## Support
 
