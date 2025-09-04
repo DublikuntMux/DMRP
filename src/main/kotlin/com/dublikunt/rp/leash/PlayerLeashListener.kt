@@ -1,5 +1,7 @@
 package com.dublikunt.rp.leash
 
+import com.dublikunt.rp.config.languageConfiguration
+import com.dublikunt.rp.util.say
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.protocol.entity.EntityPositionData
 import com.github.retrooper.packetevents.util.Vector3d
@@ -21,17 +23,17 @@ import org.bukkit.event.player.PlayerTeleportEvent
 class PlayerLeashListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        unLeashPlayer(event.player)
+        removeLeashSession(event.player)
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerDeath(event: PlayerDeathEvent) {
-        unLeashPlayer(event.entity)
+        removeLeashSession(event.entity)
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerTeleport(event: PlayerTeleportEvent) {
-        unLeashPlayer(event.player)
+        removeLeashSession(event.player)
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -46,15 +48,17 @@ class PlayerLeashListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (hasLeashSession(event.player)) {
-            val session = getSession(event.player)!!
+            val session = getLeashSession(event.player)!!
             val teleportLocation = SpigotConversionUtil.fromBukkitLocation(session.leashed.location.add(0.0, 1.0, 0.0))
-            val packet = WrapperPlayServerEntityPositionSync(session.slimeId,
+            val packet = WrapperPlayServerEntityPositionSync(
+                session.slimeId,
                 EntityPositionData(
                     teleportLocation.position,
                     Vector3d.zero(),
-                0.0f,
-                0.0f
-                ), false)
+                    0.0f,
+                    0.0f
+                ), false
+            )
             for (viewer in Bukkit.getOnlinePlayers()) {
                 PacketEvents.getAPI().playerManager.sendPacket(viewer, packet)
             }
@@ -68,9 +72,41 @@ class PlayerLeashListener : Listener {
                 if (event.rightClicked is Player) {
                     val leashedPlayer = event.rightClicked as Player
                     if (hasLeashSession(leashedPlayer)) {
-                        unLeashPlayer(leashedPlayer)
-                    } else if (leashedPlayer.hasPermission("dmrp.leash.can")) {
-                        leashPlayer(event.player, leashedPlayer)
+                        removeLeashSession(leashedPlayer)
+                        say(
+                            event.player,
+                            String.format(
+                                languageConfiguration.getString("message.leash.unleash_owner")!!,
+                                leashedPlayer.name
+                            )
+                        )
+                        say(
+                            leashedPlayer,
+                            String.format(
+                                languageConfiguration.getString("message.leash.unleash_target")!!,
+                                event.player.name
+                            )
+                        )
+                    } else {
+                        if (!leashedPlayer.hasPermission("dmrp.leash.can")) {
+                            say(event.player, languageConfiguration.getString("message.leash.cannot_leash")!!)
+                            return
+                        }
+                        addLeashSession(event.player, leashedPlayer)
+                        say(
+                            event.player,
+                            String.format(
+                                languageConfiguration.getString("message.leash.leash_owner")!!,
+                                leashedPlayer.name
+                            )
+                        )
+                        say(
+                            leashedPlayer,
+                            String.format(
+                                languageConfiguration.getString("message.leash.leash_target")!!,
+                                event.player.name
+                            )
+                        )
                     }
                 }
             }

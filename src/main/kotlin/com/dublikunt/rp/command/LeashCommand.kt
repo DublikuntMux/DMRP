@@ -2,10 +2,10 @@ package com.dublikunt.rp.command
 
 import com.dublikunt.rp.config.languageConfiguration
 import com.dublikunt.rp.config.settings
-import com.dublikunt.rp.leash.getSession
+import com.dublikunt.rp.leash.addLeashSession
+import com.dublikunt.rp.leash.getLeashSession
 import com.dublikunt.rp.leash.hasLeashSession
-import com.dublikunt.rp.leash.leashPlayer
-import com.dublikunt.rp.leash.unLeashPlayer
+import com.dublikunt.rp.leash.removeLeashSession
 import com.dublikunt.rp.util.say
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -41,9 +41,9 @@ class LeashCommand : CommandExecutor, TabExecutor {
         }
 
         if (hasLeashSession(target)) {
-            val session = getSession(target)!!
+            val session = getLeashSession(target)!!
             if (session.owner == sender || sender.hasPermission("dmrp.leash.admin")) {
-                unLeashPlayer(target)
+                removeLeashSession(target)
                 say(
                     sender,
                     String.format(languageConfiguration.getString("message.leash.unleash_owner")!!, target.name)
@@ -56,7 +56,7 @@ class LeashCommand : CommandExecutor, TabExecutor {
                 say(sender, languageConfiguration.getString("message.leash.not_owner")!!)
             }
         } else {
-            leashPlayer(sender, target)
+            addLeashSession(sender, target)
             say(sender, String.format(languageConfiguration.getString("message.leash.leash_owner")!!, target.name))
             say(target, String.format(languageConfiguration.getString("message.leash.leash_target")!!, sender.name))
         }

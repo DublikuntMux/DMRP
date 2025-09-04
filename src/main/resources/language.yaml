@@ -28,8 +28,9 @@ message:
     not_owner: "<red>You are not the owner of this leash.</red>"
     unleash_owner: "<green>You have unleashed %s.</green>"
     unleash_target: "<green>You have been unleashed by %s.</green>"
-    leash_owner: "<yellow>You have leashed %s.</yellow>"
+    leash_owner: "<yellow>You have leashed by %s.</yellow>"
     leash_target: "<yellow>You have been leashed by %s.</yellow>"
+    cannot_leash: "<red>You cannot leash this player.</red>"
 
   inventory_lock:
     error: "<red>You must provide a player to lock.</red>"

@@ -2,7 +2,8 @@ package com.dublikunt.rp.leash
 
 import com.dublikunt.rp.DMRP
 import com.dublikunt.rp.config.settings
-import com.dublikunt.rp.util.*
+import com.dublikunt.rp.util.UtilEventListener
+import com.dublikunt.rp.util.pushEntity
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
@@ -15,17 +16,17 @@ import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 import kotlin.random.Random
 
-val sessions: MutableList<LeashSession> = emptyList<LeashSession>().toMutableList()
+val leashSessions: MutableList<LeashSession> = mutableListOf()
 
 private fun generateEntityId(): Int {
     return -Random.nextInt(Int.MAX_VALUE)
 }
 
-fun getSession(player: OfflinePlayer): LeashSession? {
-    for (session in sessions) {
+fun getLeashSession(player: OfflinePlayer): LeashSession? {
+    for (session in leashSessions) {
         if (session.owner === player || session.leashed === player) {
             return session
         }
@@ -34,7 +35,7 @@ fun getSession(player: OfflinePlayer): LeashSession? {
 }
 
 fun hasLeashSession(player: OfflinePlayer): Boolean {
-    for (session in sessions) {
+    for (session in leashSessions) {
         if (session.owner === player || session.leashed === player) {
             return true
         }
@@ -42,10 +43,10 @@ fun hasLeashSession(player: OfflinePlayer): Boolean {
     return false
 }
 
-fun leashPlayer(owner: Player, leashed: Player) {
+fun addLeashSession(owner: Player, leashed: Player) {
     val slimeId = generateEntityId()
     val session = LeashSession(owner, leashed, slimeId)
-    sessions.add(session)
+    leashSessions.add(session)
 
     val entityData = listOf(
         EntityData(0, EntityDataTypes.BYTE, 0x20.toByte()), // Invisible
@@ -55,7 +56,8 @@ fun leashPlayer(owner: Player, leashed: Player) {
         EntityData(16, EntityDataTypes.INT, 1) // Small
     )
     val spawnLocation = SpigotConversionUtil.fromBukkitLocation(leashed.location.add(0.0, 1.0, 0.0))
-    val spawnPacket = WrapperPlayServerSpawnEntity(slimeId, UUID.randomUUID(), EntityTypes.SLIME,
+    val spawnPacket = WrapperPlayServerSpawnEntity(
+        slimeId, UUID.randomUUID(), EntityTypes.SLIME,
         spawnLocation, 0.0f, 0, null
     )
     val leashPacket = WrapperPlayServerAttachEntity(slimeId, owner.entityId, true)
@@ -67,23 +69,23 @@ fun leashPlayer(owner: Player, leashed: Player) {
     }
 }
 
-fun unLeashPlayer(player: Player) {
+fun removeLeashSession(player: Player) {
     if (hasLeashSession(player)) {
-        val session: LeashSession = getSession(player)!!
+        val session: LeashSession = getLeashSession(player)!!
 
         val packet = WrapperPlayServerDestroyEntities(session.slimeId)
         for (viewer in Bukkit.getOnlinePlayers()) {
             PacketEvents.getAPI().playerManager.sendPacket(viewer, packet)
         }
 
-        sessions.remove(session)
+        leashSessions.remove(session)
     }
 }
 
 fun enableLeash() {
     Bukkit.getServer().pluginManager.registerEvents(PlayerLeashListener(), DMRP.getInstance())
     Bukkit.getServer().scheduler.scheduleSyncRepeatingTask(DMRP.getInstance(), {
-        for (session in sessions) {
+        for (session in leashSessions) {
             val distance = session.owner.location.distanceSquared(session.leashed.location)
             if (distance > settings.maxLeashDistance) {
                 pushEntity(session.leashed, session.owner.location)

@@ -2,7 +2,10 @@ package com.dublikunt.rp.command
 
 import com.dublikunt.rp.config.languageConfiguration
 import com.dublikunt.rp.config.settings
-import com.dublikunt.rp.locker.*
+import com.dublikunt.rp.locker.addLockSession
+import com.dublikunt.rp.locker.getLockSession
+import com.dublikunt.rp.locker.hasLockSession
+import com.dublikunt.rp.locker.removeLockSession
 import com.dublikunt.rp.util.say
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -43,9 +46,9 @@ class LockerCommand : CommandExecutor, TabExecutor {
         }
 
         if (hasLockSession(target)) {
-            val session = getSession(target)!!
+            val session = getLockSession(target)!!
             if (session.owner == sender || sender.hasPermission("dmrp.lock.admin")) {
-                removeSession(session)
+                removeLockSession(target)
                 say(
                     sender,
                     String.format(languageConfiguration.getString("message.inventory_lock.unlock_owner")!!, target.name)
@@ -65,8 +68,7 @@ class LockerCommand : CommandExecutor, TabExecutor {
                 say(sender, languageConfiguration.getString("message.inventory_lock.cannot_lock")!!)
                 return true
             }
-            val session = InventoryLockSession(sender, target)
-            addSession(session)
+            addLockSession(sender, target)
             say(
                 sender,
                 String.format(languageConfiguration.getString("message.inventory_lock.lock_owner")!!, target.name)

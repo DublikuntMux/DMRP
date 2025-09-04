@@ -3,10 +3,11 @@ package com.dublikunt.rp.locker
 import com.dublikunt.rp.DMRP
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 
-val lockSessions: MutableList<InventoryLockSession> = emptyList<InventoryLockSession>().toMutableList()
+val lockSessions: MutableList<InventoryLockSession> = mutableListOf()
 
-fun getSession(player: OfflinePlayer): InventoryLockSession? {
+fun getLockSession(player: OfflinePlayer): InventoryLockSession? {
     for (session in lockSessions) {
         if (session.owner === player || session.locked === player) {
             return session
@@ -24,12 +25,16 @@ fun hasLockSession(player: OfflinePlayer): Boolean {
     return false
 }
 
-fun addSession(session: InventoryLockSession) {
+fun addLockSession(owner: Player, locked: Player) {
+    val session = InventoryLockSession(owner, locked)
     lockSessions.add(session)
 }
 
-fun removeSession(session: InventoryLockSession) {
-    lockSessions.remove(session)
+fun removeLockSession(player: Player) {
+    if (hasLockSession(player)) {
+        val session: InventoryLockSession = getLockSession(player)!!
+        lockSessions.remove(session)
+    }
 }
 
 fun enableInventoryLocker() {

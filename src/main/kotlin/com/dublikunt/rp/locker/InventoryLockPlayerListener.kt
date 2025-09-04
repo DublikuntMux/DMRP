@@ -16,7 +16,7 @@ class InventoryLockPlayerListener : Listener {
                 if (event.rightClicked is Player) {
                     val lockedPlayer = event.rightClicked as Player
                     if (hasLockSession(lockedPlayer)) {
-                        removeSession(getSession(lockedPlayer)!!)
+                        removeLockSession(lockedPlayer)
                         say(
                             event.player,
                             String.format(
@@ -36,8 +36,7 @@ class InventoryLockPlayerListener : Listener {
                             say(event.player, languageConfiguration.getString("message.inventory_lock.cannot_lock")!!)
                             return
                         }
-                        val session = InventoryLockSession(event.player, lockedPlayer)
-                        addSession(session)
+                        addLockSession(event.player, lockedPlayer)
                         say(
                             event.player,
                             String.format(
