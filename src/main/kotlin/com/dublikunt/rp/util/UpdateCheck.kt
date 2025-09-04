@@ -1,12 +1,19 @@
 package com.dublikunt.rp.util
 
 import com.dublikunt.rp.DMRP
+import com.dublikunt.rp.config.settings
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONArray
 import java.io.IOException
 
 private val client = OkHttpClient()
+
+@Serializable
+data class ModrinthVersion(
+    val version_number: String
+)
 
 fun getLatestVersion(): String {
     val request = Request.Builder()
@@ -15,13 +22,14 @@ fun getLatestVersion(): String {
 
     client.newCall(request).execute().use { response ->
         if (!response.isSuccessful) throw IOException("Unexpected code $response")
+        val responseBody = response.body?.string() ?: throw IOException("Empty response body")
 
-        val responseBody = response.body?.string()
-        val jsonArray = JSONArray(responseBody)
-
-        if (jsonArray.length() > 0) {
-            val jsonObject = jsonArray.getJSONObject(0)
-            return jsonObject.getString("version_number")
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
+        val versions = json.decodeFromString<List<ModrinthVersion>>(responseBody)
+        if (versions.isNotEmpty()) {
+            return versions[0].version_number
         } else {
             throw IOException("No versions found")
         }
@@ -49,6 +57,9 @@ fun isNewerVersion(currentVersion: String, latestVersion: String): Boolean {
 }
 
 fun checkForUpdate() {
+    if (!settings.update)
+        return
+
     val lastVersion = getLatestVersion()
     val currentVersion = DMRP.getInstance().description.version
 

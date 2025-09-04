@@ -7,7 +7,10 @@ load: POSTWORLD
 description: "Plugin that add new role play commands and mechanics to you server."
 website: https://github.com/DublikuntMux/DMRP
 authors: [ "Dublikunt Max" ]
-softdepend: [ PlaceholderAPI ]
+softdepend:
+  - PlaceholderAPI
+depend:
+  - packetevents
 commands:
   rp-reload:
     description: "Reload plugin config"
@@ -92,7 +95,7 @@ permissions:
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}
+  - org.jetbrains.kotlinx:kotlinx-serialization-json:${serializationVersion}
   - net.kyori:adventure-platform-bukkit:${adventurePlatformVersion}
   - net.kyori:adventure-text-minimessage:${minimessageVersion}
   - com.squareup.okhttp3:okhttp:${okhttpVersion}
-  - org.json:json:${orgJsonVersion}
