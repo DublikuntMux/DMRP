@@ -49,11 +49,11 @@ class PlayerLeashListener : Listener {
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (hasLeashSession(event.player)) {
             val session = getLeashSession(event.player)!!
-            val teleportLocation = SpigotConversionUtil.fromBukkitLocation(session.leashed.location.add(0.0, 1.0, 0.0))
+            val newLocation = SpigotConversionUtil.fromBukkitLocation(session.leashed.location.add(slimeOffset))
             val packet = WrapperPlayServerEntityPositionSync(
                 session.slimeId,
                 EntityPositionData(
-                    teleportLocation.position,
+                    newLocation.position,
                     Vector3d.zero(),
                     0.0f,
                     0.0f

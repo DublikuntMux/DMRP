@@ -8,11 +8,9 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerAttachEntity
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity
+import com.github.retrooper.packetevents.wrapper.play.server.*
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -20,6 +18,7 @@ import java.util.*
 import kotlin.random.Random
 
 val leashSessions: MutableList<LeashSession> = mutableListOf()
+val slimeOffset: org.bukkit.util.Vector = org.bukkit.util.Vector(0.0, 0.7, 0.0)
 
 private fun generateEntityId(): Int {
     return -Random.nextInt(Int.MAX_VALUE)
@@ -45,7 +44,8 @@ fun hasLeashSession(player: OfflinePlayer): Boolean {
 
 fun addLeashSession(owner: Player, leashed: Player) {
     val slimeId = generateEntityId()
-    val session = LeashSession(owner, leashed, slimeId)
+    val slimeUuid = UUID.randomUUID()
+    val session = LeashSession(owner, leashed, slimeId, slimeUuid)
     leashSessions.add(session)
 
     val entityData = listOf(
@@ -55,18 +55,24 @@ fun addLeashSession(owner: Player, leashed: Player) {
         EntityData(15, EntityDataTypes.BYTE, 1.toByte()), // noAI
         EntityData(16, EntityDataTypes.INT, 1) // Small
     )
-    val spawnLocation = SpigotConversionUtil.fromBukkitLocation(leashed.location.add(0.0, 1.0, 0.0))
+    val spawnLocation = SpigotConversionUtil.fromBukkitLocation(leashed.location.add(slimeOffset))
     val spawnPacket = WrapperPlayServerSpawnEntity(
-        slimeId, UUID.randomUUID(), EntityTypes.SLIME,
+        slimeId, slimeUuid, EntityTypes.SLIME,
         spawnLocation, 0.0f, 0, null
     )
     val leashPacket = WrapperPlayServerAttachEntity(slimeId, owner.entityId, true)
     val dataPacket = WrapperPlayServerEntityMetadata(slimeId, entityData)
+
     for (viewer in Bukkit.getOnlinePlayers()) {
         PacketEvents.getAPI().playerManager.sendPacket(viewer, spawnPacket)
         PacketEvents.getAPI().playerManager.sendPacket(viewer, leashPacket)
         PacketEvents.getAPI().playerManager.sendPacket(viewer, dataPacket)
     }
+
+    val teamPacket = createTeamPacket(session)
+    teamPacket.teamMode = WrapperPlayServerTeams.TeamMode.CREATE
+
+    PacketEvents.getAPI().playerManager.sendPacket(leashed, teamPacket)
 }
 
 fun removeLeashSession(player: Player) {
@@ -78,8 +84,29 @@ fun removeLeashSession(player: Player) {
             PacketEvents.getAPI().playerManager.sendPacket(viewer, packet)
         }
 
+        val teamPacket = createTeamPacket(session)
+        teamPacket.teamMode = WrapperPlayServerTeams.TeamMode.REMOVE
+        PacketEvents.getAPI().playerManager.sendPacket(session.leashed, teamPacket)
+
         leashSessions.remove(session)
     }
+}
+
+fun createTeamPacket(session: LeashSession): WrapperPlayServerTeams {
+    val teamName = "nocollide_" + session.leashed.name
+    val teamMembers = listOf(session.leashed.name, session.slimeUUID.toString())
+    val teamInfo = WrapperPlayServerTeams.ScoreBoardTeamInfo(
+        Component.empty(),
+        null,
+        null,
+        WrapperPlayServerTeams.NameTagVisibility.NEVER,
+        WrapperPlayServerTeams.CollisionRule.NEVER,
+        null,
+        WrapperPlayServerTeams.OptionData.FRIENDLY_FIRE
+    )
+
+    val teamPacket = WrapperPlayServerTeams(teamName, WrapperPlayServerTeams.TeamMode.CREATE, teamInfo, teamMembers)
+    return teamPacket
 }
 
 fun enableLeash() {
