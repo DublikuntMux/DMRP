@@ -12,4 +12,5 @@ data object SettingsConfig {
     var maxLeashDistance: Int = 15
 
     var lockDistance: Int = 5
+    var leashSyncRate: Int = 2
 }

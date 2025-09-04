@@ -72,4 +72,5 @@ fun reload() {
     settings.maxLeashDistance = pluginConfiguration.getInt("leash_distance", 15)
 
     settings.lockDistance = pluginConfiguration.getInt("lock_distance", 5)
+    settings.leashSyncRate = pluginConfiguration.getInt("leash_sync_rate", 2)
 }

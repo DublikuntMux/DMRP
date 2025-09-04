@@ -2,12 +2,6 @@ package com.dublikunt.rp.leash
 
 import com.dublikunt.rp.config.languageConfiguration
 import com.dublikunt.rp.util.say
-import com.github.retrooper.packetevents.PacketEvents
-import com.github.retrooper.packetevents.protocol.entity.EntityPositionData
-import com.github.retrooper.packetevents.util.Vector3d
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityPositionSync
-import io.github.retrooper.packetevents.util.SpigotConversionUtil
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -16,7 +10,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 
@@ -41,26 +34,6 @@ class PlayerLeashListener : Listener {
         if (event.damager is Player) {
             if (hasLeashSession(event.damager as Player)) {
                 event.isCancelled = true
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    fun onPlayerMove(event: PlayerMoveEvent) {
-        if (hasLeashSession(event.player)) {
-            val session = getLeashSession(event.player)!!
-            val newLocation = SpigotConversionUtil.fromBukkitLocation(session.leashed.location.add(slimeOffset))
-            val packet = WrapperPlayServerEntityPositionSync(
-                session.slimeId,
-                EntityPositionData(
-                    newLocation.position,
-                    Vector3d.zero(),
-                    0.0f,
-                    0.0f
-                ), false
-            )
-            for (viewer in Bukkit.getOnlinePlayers()) {
-                PacketEvents.getAPI().playerManager.sendPacket(viewer, packet)
             }
         }
     }

@@ -16,3 +16,5 @@ leash_distance: 15
 
 # Maximum how many blocks do you need to be from a player to lock him
 lock_distance: 5
+# How often need to sync leash position in clients in ticks
+leash_sync_rate: 2

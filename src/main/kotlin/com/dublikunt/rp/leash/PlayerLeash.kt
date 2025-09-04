@@ -5,9 +5,11 @@ import com.dublikunt.rp.config.settings
 import com.dublikunt.rp.util.UtilEventListener
 import com.dublikunt.rp.util.pushEntity
 import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.protocol.entity.EntityPositionData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
+import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
@@ -45,8 +47,6 @@ fun hasLeashSession(player: OfflinePlayer): Boolean {
 fun addLeashSession(owner: Player, leashed: Player) {
     val slimeId = generateEntityId()
     val slimeUuid = UUID.randomUUID()
-    val session = LeashSession(owner, leashed, slimeId, slimeUuid)
-    leashSessions.add(session)
 
     val entityData = listOf(
         EntityData(0, EntityDataTypes.BYTE, 0x20.toByte()), // Invisible
@@ -55,24 +55,11 @@ fun addLeashSession(owner: Player, leashed: Player) {
         EntityData(15, EntityDataTypes.BYTE, 1.toByte()), // noAI
         EntityData(16, EntityDataTypes.INT, 1) // Small
     )
-    val spawnLocation = SpigotConversionUtil.fromBukkitLocation(leashed.location.add(slimeOffset))
-    val spawnPacket = WrapperPlayServerSpawnEntity(
-        slimeId, slimeUuid, EntityTypes.SLIME,
-        spawnLocation, 0.0f, 0, null
-    )
     val leashPacket = WrapperPlayServerAttachEntity(slimeId, owner.entityId, true)
     val dataPacket = WrapperPlayServerEntityMetadata(slimeId, entityData)
 
-    for (viewer in Bukkit.getOnlinePlayers()) {
-        PacketEvents.getAPI().playerManager.sendPacket(viewer, spawnPacket)
-        PacketEvents.getAPI().playerManager.sendPacket(viewer, leashPacket)
-        PacketEvents.getAPI().playerManager.sendPacket(viewer, dataPacket)
-    }
-
-    val teamPacket = createTeamPacket(session)
-    teamPacket.teamMode = WrapperPlayServerTeams.TeamMode.CREATE
-
-    PacketEvents.getAPI().playerManager.sendPacket(leashed, teamPacket)
+    val session = LeashSession(owner, leashed, slimeId, slimeUuid, leashPacket, dataPacket)
+    leashSessions.add(session)
 }
 
 fun removeLeashSession(player: Player) {
@@ -80,8 +67,9 @@ fun removeLeashSession(player: Player) {
         val session: LeashSession = getLeashSession(player)!!
 
         val packet = WrapperPlayServerDestroyEntities(session.slimeId)
-        for (viewer in Bukkit.getOnlinePlayers()) {
-            PacketEvents.getAPI().playerManager.sendPacket(viewer, packet)
+        for (viewerId in session.viewers) {
+            val viewer = Bukkit.getPlayer(viewerId)
+            viewer?.let { PacketEvents.getAPI().playerManager.sendPacket(it, packet) }
         }
 
         val teamPacket = createTeamPacket(session)
@@ -119,5 +107,63 @@ fun enableLeash() {
             }
         }
     }, 20, 20)
+    Bukkit.getServer().scheduler.scheduleSyncRepeatingTask(DMRP.getInstance(), {
+        for (session in leashSessions) {
+            val leashedPlayer = session.leashed
+            val viewDistance = leashedPlayer.world.viewDistance * 16
+            val viewDistanceSq = (viewDistance * viewDistance).toDouble()
+
+            val currentViewers = mutableSetOf<UUID>()
+
+            for (viewer in leashedPlayer.world.players) {
+                if (viewer.location.distanceSquared(leashedPlayer.location) <= viewDistanceSq) {
+                    currentViewers.add(viewer.uniqueId)
+
+                    if (!session.viewers.contains(viewer.uniqueId)) {
+                        val spawnLocation =
+                            SpigotConversionUtil.fromBukkitLocation(leashedPlayer.location.add(slimeOffset))
+                        val spawnPacket = WrapperPlayServerSpawnEntity(
+                            session.slimeId, session.slimeUUID, EntityTypes.SLIME,
+                            spawnLocation, 0.0f, 0, null
+                        )
+                        PacketEvents.getAPI().playerManager.sendPacket(viewer, spawnPacket)
+                        PacketEvents.getAPI().playerManager.sendPacket(viewer, session.leashPacket)
+                        PacketEvents.getAPI().playerManager.sendPacket(viewer, session.dataPacket)
+
+                        if (viewer == leashedPlayer) {
+                            val teamPacket = createTeamPacket(session)
+                            teamPacket.teamMode = WrapperPlayServerTeams.TeamMode.CREATE
+                            PacketEvents.getAPI().playerManager.sendPacket(viewer, teamPacket)
+                        }
+                    } else {
+                        val newLocation =
+                            SpigotConversionUtil.fromBukkitLocation(leashedPlayer.location.add(slimeOffset))
+                        val packet = WrapperPlayServerEntityPositionSync(
+                            session.slimeId,
+                            EntityPositionData(
+                                newLocation.position,
+                                Vector3d.zero(),
+                                0.0f,
+                                0.0f
+                            ), false
+                        )
+                        PacketEvents.getAPI().playerManager.sendPacket(viewer, packet)
+                    }
+                }
+            }
+
+            val removedViewers = session.viewers.filter { !currentViewers.contains(it) }
+            if (removedViewers.isNotEmpty()) {
+                val destroyPacket = WrapperPlayServerDestroyEntities(session.slimeId)
+                for (removedViewerId in removedViewers) {
+                    val removedViewer = Bukkit.getPlayer(removedViewerId)
+                    removedViewer?.let { PacketEvents.getAPI().playerManager.sendPacket(it, destroyPacket) }
+                }
+            }
+
+            session.viewers.clear()
+            session.viewers.addAll(currentViewers)
+        }
+    }, settings.leashSyncRate.toLong(), settings.leashSyncRate.toLong())
     Bukkit.getServer().pluginManager.registerEvents(UtilEventListener(), DMRP.getInstance())
 }
