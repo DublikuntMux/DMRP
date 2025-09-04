@@ -21,6 +21,7 @@ import kotlin.random.Random
 
 val leashSessions: MutableList<LeashSession> = mutableListOf()
 val slimeOffset: org.bukkit.util.Vector = org.bukkit.util.Vector(0.0, 0.7, 0.0)
+private var syncTask: Int = -1
 
 private fun generateEntityId(): Int {
     return -Random.nextInt(Int.MAX_VALUE)
@@ -97,17 +98,11 @@ fun createTeamPacket(session: LeashSession): WrapperPlayServerTeams {
     return teamPacket
 }
 
-fun enableLeash() {
-    Bukkit.getServer().pluginManager.registerEvents(PlayerLeashListener(), DMRP.getInstance())
-    Bukkit.getServer().scheduler.scheduleSyncRepeatingTask(DMRP.getInstance(), {
-        for (session in leashSessions) {
-            val distance = session.owner.location.distanceSquared(session.leashed.location)
-            if (distance > settings.maxLeashDistance) {
-                pushEntity(session.leashed, session.owner.location)
-            }
-        }
-    }, 20, 20)
-    Bukkit.getServer().scheduler.scheduleSyncRepeatingTask(DMRP.getInstance(), {
+fun reloadLeash() {
+    if (syncTask != -1) {
+        Bukkit.getServer().scheduler.cancelTask(syncTask)
+    }
+    syncTask = Bukkit.getServer().scheduler.scheduleSyncRepeatingTask(DMRP.getInstance(), {
         for (session in leashSessions) {
             val leashedPlayer = session.leashed
             val viewDistance = leashedPlayer.world.viewDistance * 16
@@ -165,5 +160,18 @@ fun enableLeash() {
             session.viewers.addAll(currentViewers)
         }
     }, settings.leashSyncRate.toLong(), settings.leashSyncRate.toLong())
+}
+
+fun enableLeash() {
+    Bukkit.getServer().pluginManager.registerEvents(PlayerLeashListener(), DMRP.getInstance())
+    Bukkit.getServer().scheduler.scheduleSyncRepeatingTask(DMRP.getInstance(), {
+        for (session in leashSessions) {
+            val distance = session.owner.location.distanceSquared(session.leashed.location)
+            if (distance > settings.maxLeashDistance) {
+                pushEntity(session.leashed, session.owner.location)
+            }
+        }
+    }, 20, 20)
+    reloadLeash()
     Bukkit.getServer().pluginManager.registerEvents(UtilEventListener(), DMRP.getInstance())
 }

@@ -44,22 +44,32 @@ class PlayerLeashListener : Listener {
             if (event.player.hasPermission("dmrp.leash.use")) {
                 if (event.rightClicked is Player) {
                     val leashedPlayer = event.rightClicked as Player
-                    if (hasLeashSession(leashedPlayer)) {
-                        removeLeashSession(leashedPlayer)
-                        say(
-                            event.player,
-                            String.format(
-                                languageConfiguration.getString("message.leash.unleash_owner")!!,
-                                leashedPlayer.name
+                    val session = getLeashSession(leashedPlayer)
+                    if (session != null) {
+                        if (session.owner == event.player || event.player.hasPermission("dmrp.leash.admin")) {
+                            removeLeashSession(leashedPlayer)
+                            say(
+                                event.player,
+                                String.format(
+                                    languageConfiguration.getString("message.leash.unleash_owner")!!,
+                                    leashedPlayer.name
+                                )
                             )
-                        )
-                        say(
-                            leashedPlayer,
-                            String.format(
-                                languageConfiguration.getString("message.leash.unleash_target")!!,
-                                event.player.name
+                            say(
+                                leashedPlayer,
+                                String.format(
+                                    languageConfiguration.getString("message.leash.unleash_target")!!,
+                                    event.player.name
+                                )
                             )
-                        )
+                        } else {
+                            say(
+                                event.player,
+                                String.format(
+                                    languageConfiguration.getString("message.leash.not_owner")!!
+                                )
+                            )
+                        }
                     } else {
                         if (!leashedPlayer.hasPermission("dmrp.leash.can")) {
                             say(event.player, languageConfiguration.getString("message.leash.cannot_leash")!!)

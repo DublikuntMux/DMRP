@@ -2,6 +2,7 @@ package com.dublikunt.rp.config
 
 import com.dublikunt.rp.DMPlaceholders
 import com.dublikunt.rp.DMRP
+import com.dublikunt.rp.leash.reloadLeash
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
@@ -73,4 +74,5 @@ fun reload() {
 
     settings.lockDistance = pluginConfiguration.getInt("lock_distance", 5)
     settings.leashSyncRate = pluginConfiguration.getInt("leash_sync_rate", 2)
+    reloadLeash()
 }

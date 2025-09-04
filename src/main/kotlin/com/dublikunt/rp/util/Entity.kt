@@ -29,7 +29,7 @@ fun pushEntity(entity: Entity, location: Location, multiplier: Double = 1.0, dam
     }, 1)
 
     if (!damageEnabled) {
-        addNoFallDamage(entity, 100)
+        addNoFallDamage(entity, 5 * 20)
     }
 }
 
