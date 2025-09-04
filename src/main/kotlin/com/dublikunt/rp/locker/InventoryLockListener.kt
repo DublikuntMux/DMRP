@@ -1,7 +1,5 @@
 package com.dublikunt.rp.locker
 
-import com.dublikunt.rp.config.languageConfiguration
-import com.dublikunt.rp.util.say
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -16,16 +14,12 @@ class InventoryLockListener : Listener {
     fun onInventoryClick(event: InventoryClickEvent) {
         val player = event.whoClicked
         if (player is Player) {
-            val session = getSession(player)
-            if (session == null)
-                return
-
+            val session = getSession(player) ?: return
             if (session.locked != player)
                 return
 
             if (event.view.topInventory == event.clickedInventory || event.clickedInventory != null) {
                 event.isCancelled = true
-                say(player, languageConfiguration.getString("message.inventory_lock.on_move")!!)
             }
         }
     }
@@ -34,15 +28,11 @@ class InventoryLockListener : Listener {
     fun onInventoryDrag(event: InventoryDragEvent) {
         val player = event.whoClicked
         if (player is Player) {
-            val session = getSession(player)
-            if (session == null)
-                return
-
+            val session = getSession(player) ?: return
             if (session.locked != player)
                 return
 
             event.isCancelled = true
-            say(player, languageConfiguration.getString("message.inventory_lock.on_move")!!)
         }
     }
 

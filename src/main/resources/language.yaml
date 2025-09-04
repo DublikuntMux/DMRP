@@ -33,7 +33,6 @@ message:
 
   inventory_lock:
     error: "<red>You must provide a player to lock.</red>"
-    on_move: "<red>Your inventory is locked.</red>"
     not_found: "<red>Player not found.</red>"
     not_owner: "<red>You are not the owner of this lock.</red>"
     unlock_owner: "<green>You have unlocked the inventory of %s.</green>"

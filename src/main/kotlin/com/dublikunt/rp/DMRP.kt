@@ -1,21 +1,27 @@
 package com.dublikunt.rp
 
 import com.dublikunt.rp.command.*
-import com.dublikunt.rp.config.settings
 import com.dublikunt.rp.config.setup
 import com.dublikunt.rp.leash.enableLeash
 import com.dublikunt.rp.locker.enableInventoryLocker
 import com.dublikunt.rp.util.checkForUpdate
+import com.github.retrooper.packetevents.PacketEvents
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
 class DMRP : JavaPlugin() {
+    override fun onLoad() {
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this))
+        PacketEvents.getAPI().load()
+    }
+
     override fun onEnable() {
         Metrics(this, 21382)
         setup()
+        checkForUpdate()
 
-        if (settings.update)
-            checkForUpdate()
+        PacketEvents.getAPI().init()
 
         getCommand("rp-reload")!!.setExecutor(ReloadCommand())
 
@@ -35,6 +41,10 @@ class DMRP : JavaPlugin() {
 
         enableLeash()
         enableInventoryLocker()
+    }
+
+    override fun onDisable() {
+        PacketEvents.getAPI().terminate()
     }
 
     companion object {
