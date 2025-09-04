@@ -35,8 +35,7 @@ fun setup() {
 
     if (!configFile.exists()) {
         try {
-            configFile.createNewFile()
-            DMRP.getInstance().saveResource("config.yaml", true)
+            DMRP.getInstance().saveResource("config.yaml", false)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -44,8 +43,7 @@ fun setup() {
 
     if (!languageFile.exists()) {
         try {
-            languageFile.createNewFile()
-            DMRP.getInstance().saveResource("language.yaml", true)
+            DMRP.getInstance().saveResource("language.yaml", false)
         } catch (e: IOException) {
             e.printStackTrace()
         }

@@ -1,5 +1,11 @@
 package com.dublikunt.rp.leash
 
+import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.protocol.entity.EntityPositionData
+import com.github.retrooper.packetevents.util.Vector3d
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityPositionSync
+import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -41,7 +47,17 @@ class PlayerLeashListener : Listener {
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (hasLeashSession(event.player)) {
             val session = getSession(event.player)!!
-            session.slime.teleport(session.leashed.location.add(0.0, 1.0, 0.0))
+            val teleportLocation = SpigotConversionUtil.fromBukkitLocation(session.leashed.location.add(0.0, 1.0, 0.0))
+            val packet = WrapperPlayServerEntityPositionSync(session.slimeId,
+                EntityPositionData(
+                    teleportLocation.position,
+                    Vector3d.zero(),
+                0.0f,
+                0.0f
+                ), false)
+            for (viewer in Bukkit.getOnlinePlayers()) {
+                PacketEvents.getAPI().playerManager.sendPacket(viewer, packet)
+            }
         }
     }
 

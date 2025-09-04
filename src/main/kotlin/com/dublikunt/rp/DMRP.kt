@@ -10,6 +10,7 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
+
 class DMRP : JavaPlugin() {
     override fun onLoad() {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this))
