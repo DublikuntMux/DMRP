@@ -1,6 +1,6 @@
 package com.dublikunt.rp.config
 
-data object SettingsConfig {
+data object SettingsFile {
     var sayDistance: Int = 15
     var update: Boolean = true
 

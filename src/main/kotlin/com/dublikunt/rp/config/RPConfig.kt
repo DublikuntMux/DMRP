@@ -19,7 +19,7 @@ lateinit var languageConfiguration: FileConfiguration
 var usePlaceholders: Boolean = false
     private set
 
-var settings: SettingsConfig = SettingsConfig
+var settings: SettingsFile = SettingsFile
     private set
 
 fun setup() {
