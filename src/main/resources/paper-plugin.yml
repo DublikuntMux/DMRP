@@ -1,47 +1,24 @@
 name: DMRP
 main: com.dublikunt.rp.DMRP
+loader: com.dublikunt.rp.DMRPLoader
 version: "${version}"
 api-version: "${apiVersion}"
-prefix: DMRP
 load: POSTWORLD
+has-open-classloader: false
+
+prefix: DMRP
 description: "Plugin that add new role play commands and mechanics to you server."
 website: https://github.com/DublikuntMux/DMRP
 authors: [ "Dublikunt Max" ]
-softdepend:
-  - PlaceholderAPI
-depend:
-  - packetevents
-commands:
-  rp-reload:
-    description: "Reload plugin config"
-    permission: dmrp.command.reload
-    permission-message: §3DMRP §f> You do not have permission to do that.
-    usage: /rp-reload
-  try:
-    description: "50% change to do something"
-    permission: dmrp.command.try
-    permission-message: §3DMRP §f> You do not have permission to do that.
-    usage: /try [what to try]
-  dice:
-    description: "throw selected amount of dice with selected amount of sides"
-    permission: dmrp.command.dice
-    permission-message: §3DMRP §f> You do not have permission to do that.
-    usage: /dice [amount] [sides]
-  coinflip:
-    description: "make coin flip with 50/50 chance"
-    permission: dmrp.command.coinflip
-    permission-message: §3DMRP §f> You do not have permission to do that.
-    usage: /coinflip
-  lockinv:
-    description: "Locks/unlocks player inventory"
-    permission: dmrp.command.lockinv
-    permission-message: §3DMRP §f> You do not have permission to do that.
-    usage: /lockinv [player]
-  leash:
-    description: "Leashes/unleashes a player"
-    permission: dmrp.command.leash
-    permission-message: §3DMRP §f> You do not have permission to do that.
-    usage: /leash [player]
+
+dependencies:
+  server:
+    packetevents:
+      load: BEFORE
+      required: true
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
 
 permissions:
   dmrp.lock.admin:
@@ -92,10 +69,3 @@ permissions:
   dmrp.command.leash:
     description: Has permission to leash player command
     default: op
-
-libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}
-  - org.jetbrains.kotlinx:kotlinx-serialization-json:${serializationVersion}
-  - net.kyori:adventure-platform-bukkit:${adventurePlatformVersion}
-  - net.kyori:adventure-text-minimessage:${minimessageVersion}
-  - com.squareup.okhttp3:okhttp:${okhttpVersion}

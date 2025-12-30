@@ -1,0 +1,6 @@
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}
+  - org.jetbrains.kotlinx:kotlinx-serialization-json:${serializationVersion}
+  - net.kyori:adventure-platform-bukkit:${adventurePlatformVersion}
+  - net.kyori:adventure-text-minimessage:${minimessageVersion}
+  - com.squareup.okhttp3:okhttp:${okhttpVersion}

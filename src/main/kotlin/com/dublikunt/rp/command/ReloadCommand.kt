@@ -1,22 +1,21 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.languageConfiguration
-import com.dublikunt.rp.config.reload
-import com.dublikunt.rp.util.say
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
+import com.dublikunt.rp.config.RPConfig
+import com.dublikunt.rp.util.ChatUtils
+import io.papermc.paper.command.brigadier.BasicCommand
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
-class ReloadCommand : CommandExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
-        reload()
+@Suppress("UnstableApiUsage")
+class ReloadCommand : BasicCommand {
+    override fun execute(
+        commandSourceStack: CommandSourceStack,
+        args: Array<out String>
+    ) {
+        RPConfig.reload()
+        ChatUtils.say(commandSourceStack.sender, RPConfig.languageConfiguration.getString("message.reload")!!)
+    }
 
-        say(languageConfiguration.getString("message.reload")!!)
-        if (sender is Player) {
-            say(sender, languageConfiguration.getString("message.reload")!!)
-        }
-
-        return true
+    override fun permission(): String {
+        return "dmrp.command.reload"
     }
 }

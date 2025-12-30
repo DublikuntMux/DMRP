@@ -1,82 +1,93 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.languageConfiguration
-import com.dublikunt.rp.config.settings
-import com.dublikunt.rp.leash.addLeashSession
-import com.dublikunt.rp.leash.getLeashSession
-import com.dublikunt.rp.leash.hasLeashSession
-import com.dublikunt.rp.leash.removeLeashSession
-import com.dublikunt.rp.util.say
+import com.dublikunt.rp.config.RPConfig
+import com.dublikunt.rp.leash.PlayerLeash
+import com.dublikunt.rp.util.ChatUtils
+import io.papermc.paper.command.brigadier.BasicCommand
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 
-class LeashCommand : CommandExecutor, TabExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
+@Suppress("UnstableApiUsage")
+class LeashCommand : BasicCommand {
+    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
+        val sender = commandSourceStack.sender
         if (sender !is Player) {
             sender.sendMessage("This command can only be run by a player.")
-            return true
+            return
         }
 
-        if (args.isNullOrEmpty()) {
-            say(sender, languageConfiguration.getString("message.leash.error")!!)
-            return true
+        if (args.isEmpty()) {
+            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.error")!!)
+            return
         }
 
         val target = Bukkit.getPlayerExact(args[0])
         if (target == null) {
-            say(sender, languageConfiguration.getString("message.leash.not_found")!!)
-            return true
+            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.not_found")!!)
+            return
         }
 
         if (sender != target) {
             val distance = sender.location.distanceSquared(target.location)
-            if (distance > settings.maxLeashDistance * settings.maxLeashDistance) {
-                say(sender, languageConfiguration.getString("message.leash.too_far")!!)
-                return true
+            if (distance > RPConfig.settings.maxLeashDistance * RPConfig.settings.maxLeashDistance) {
+                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.too_far")!!)
+                return
             }
         }
 
-        if (hasLeashSession(target)) {
-            val session = getLeashSession(target)!!
+        if (PlayerLeash.hasSession(target)) {
+            val session = PlayerLeash.getSession(target)!!
             if (session.owner == sender || sender.hasPermission("dmrp.leash.admin")) {
-                removeLeashSession(target)
-                say(
+                PlayerLeash.removeSession(target)
+                ChatUtils.say(
                     sender,
-                    String.format(languageConfiguration.getString("message.leash.unleash_owner")!!, target.name)
+                    String.format(
+                        RPConfig.languageConfiguration.getString("message.leash.unleash_owner")!!,
+                        ChatUtils.mm.serialize(target.name())
+                    )
                 )
-                say(
+                ChatUtils.say(
                     target,
-                    String.format(languageConfiguration.getString("message.leash.unleash_target")!!, sender.name)
+                    String.format(
+                        RPConfig.languageConfiguration.getString("message.leash.unleash_target")!!,
+                        ChatUtils.mm.serialize(sender.name())
+                    )
                 )
             } else {
-                say(sender, languageConfiguration.getString("message.leash.not_owner")!!)
+                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.not_owner")!!)
             }
         } else {
-            addLeashSession(sender, target)
-            say(sender, String.format(languageConfiguration.getString("message.leash.leash_owner")!!, target.name))
-            say(target, String.format(languageConfiguration.getString("message.leash.leash_target")!!, sender.name))
+            PlayerLeash.addSession(sender, target)
+            ChatUtils.say(
+                sender,
+                String.format(
+                    RPConfig.languageConfiguration.getString("message.leash.leash_owner")!!,
+                    ChatUtils.mm.serialize(target.name())
+                )
+            )
+            ChatUtils.say(
+                target,
+                String.format(
+                    RPConfig.languageConfiguration.getString("message.leash.leash_target")!!,
+                    ChatUtils.mm.serialize(sender.name())
+                )
+            )
         }
-
-        return true
     }
 
-    override fun onTabComplete(
-        sender: CommandSender,
-        command: Command,
-        label: String,
-        args: Array<String>
-    ): List<String> {
+    override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
         if (args.size == 1) {
             val partialName = args[0].lowercase()
-            return sender.server.onlinePlayers
+            return commandSourceStack.sender.server.onlinePlayers
                 .map { it.name }
                 .filter { it.lowercase().startsWith(partialName) }
         }
 
         return emptyList()
+    }
+
+    override fun permission(): String {
+        return "dmrp.leash.use"
     }
 }

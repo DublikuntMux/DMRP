@@ -1,10 +1,10 @@
 package com.dublikunt.rp
 
 import com.dublikunt.rp.command.*
-import com.dublikunt.rp.config.setup
-import com.dublikunt.rp.leash.enableLeash
-import com.dublikunt.rp.locker.enableInventoryLocker
-import com.dublikunt.rp.util.checkForUpdate
+import com.dublikunt.rp.config.RPConfig
+import com.dublikunt.rp.leash.PlayerLeash
+import com.dublikunt.rp.locker.InventoryLocker
+import com.dublikunt.rp.util.UpdateCheck
 import com.github.retrooper.packetevents.PacketEvents
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bstats.bukkit.Metrics
@@ -19,29 +19,23 @@ class DMRP : JavaPlugin() {
 
     override fun onEnable() {
         Metrics(this, 21382)
-        setup()
-        checkForUpdate()
-
         PacketEvents.getAPI().init()
 
-        getCommand("rp-reload")!!.setExecutor(ReloadCommand())
+        RPConfig.setup()
+        UpdateCheck.check()
+        PlayerLeash.enable()
+        InventoryLocker.enable()
+        registerCommands()
+    }
 
-        getCommand("try")!!.setExecutor(TryCommand())
-        getCommand("try")!!.tabCompleter = TryCommand()
-
-        getCommand("dice")!!.setExecutor(DiceCommand())
-        getCommand("dice")!!.tabCompleter = DiceCommand()
-
-        getCommand("coinflip")!!.setExecutor(CoinflipCommand())
-
-        getCommand("lockinv")!!.setExecutor(LockerCommand())
-        getCommand("lockinv")!!.tabCompleter = LockerCommand()
-
-        getCommand("leash")!!.setExecutor(LeashCommand())
-        getCommand("leash")!!.tabCompleter = LeashCommand()
-
-        enableLeash()
-        enableInventoryLocker()
+    @Suppress("UnstableApiUsage")
+    private fun registerCommands() {
+        registerCommand("rp-reload", ReloadCommand())
+        registerCommand("coinflip", CoinflipCommand())
+        registerCommand("try", TryCommand())
+        registerCommand("dice", DiceCommand())
+        registerCommand("leash", LeashCommand())
+        registerCommand("lockinv", LockerCommand())
     }
 
     override fun onDisable() {

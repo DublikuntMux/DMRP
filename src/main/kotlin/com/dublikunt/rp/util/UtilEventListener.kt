@@ -9,7 +9,7 @@ class UtilEventListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onEntityDamage(event: EntityDamageEvent) {
         if (event.cause == EntityDamageEvent.DamageCause.FALL) {
-            if (noFallEntities.containsKey(event.entity.entityId)) {
+            if (EntityUtils.noFallEntities.containsKey(event.entity.entityId)) {
                 event.isCancelled = true
             }
         }

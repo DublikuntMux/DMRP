@@ -1,24 +1,29 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.languageConfiguration
-import com.dublikunt.rp.util.say
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
+import com.dublikunt.rp.config.RPConfig
+import com.dublikunt.rp.util.ChatUtils
+import io.papermc.paper.command.brigadier.BasicCommand
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import java.util.concurrent.ThreadLocalRandom
 
-class CoinflipCommand : CommandExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
-        if (sender is Player) {
-            val x = ThreadLocalRandom.current().nextInt(100) + 1 <= 50
-            val massage: String = if (x) {
-                String.format(languageConfiguration.getString("message.coinflip.heads")!!, sender.displayName)
-            } else {
-                String.format(languageConfiguration.getString("message.coinflip.tails")!!, sender.displayName)
-            }
-            say(sender.location, massage)
+@Suppress("UnstableApiUsage")
+class CoinflipCommand : BasicCommand {
+    override fun execute(
+        commandSourceStack: CommandSourceStack,
+        args: Array<out String>
+    ) {
+        val x = ThreadLocalRandom.current().nextInt(100) + 1 <= 50
+        val name = ChatUtils.mm.serialize(commandSourceStack.sender.name())
+        val massage: String = if (x) {
+            String.format(RPConfig.languageConfiguration.getString("message.coinflip.heads")!!, name)
+        } else {
+            String.format(RPConfig.languageConfiguration.getString("message.coinflip.tails")!!, name)
         }
-        return true
+
+        ChatUtils.sayDistance(commandSourceStack.sender, massage)
+    }
+
+    override fun permission(): String {
+        return "dmrp.command.coinflip"
     }
 }

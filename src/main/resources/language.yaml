@@ -41,7 +41,6 @@ message:
     lock_owner: "<yellow>You have locked the inventory of %s.</yellow>"
     lock_target: "<yellow>Your inventory has been locked by %s.</yellow>"
     too_far: "<red>Target is too far away.</red>"
-    no_permission: "<red>You don't have permission to lock inventories.</red>"
     cannot_lock: "<red>You cannot lock this player's inventory.</red>"
 
   reload: "Config <green>reloaded!</green>"

@@ -14,7 +14,7 @@ class InventoryLockListener : Listener {
     fun onInventoryClick(event: InventoryClickEvent) {
         val player = event.whoClicked
         if (player is Player) {
-            val session = getLockSession(player) ?: return
+            val session = InventoryLocker.getSession(player) ?: return
             if (session.locked != player)
                 return
 
@@ -28,7 +28,7 @@ class InventoryLockListener : Listener {
     fun onInventoryDrag(event: InventoryDragEvent) {
         val player = event.whoClicked
         if (player is Player) {
-            val session = getLockSession(player) ?: return
+            val session = InventoryLocker.getSession(player) ?: return
             if (session.locked != player)
                 return
 
@@ -38,11 +38,11 @@ class InventoryLockListener : Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        removeLockSession(event.player)
+        InventoryLocker.removeSession(event.player)
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerDeath(event: PlayerDeathEvent) {
-        removeLockSession(event.entity)
+        InventoryLocker.removeSession(event.entity)
     }
 }

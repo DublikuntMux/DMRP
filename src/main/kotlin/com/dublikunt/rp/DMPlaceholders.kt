@@ -1,8 +1,8 @@
 package com.dublikunt.rp
 
-import com.dublikunt.rp.config.languageConfiguration
-import com.dublikunt.rp.leash.hasLeashSession
-import com.dublikunt.rp.locker.hasLockSession
+import com.dublikunt.rp.config.RPConfig
+import com.dublikunt.rp.leash.PlayerLeash
+import com.dublikunt.rp.locker.InventoryLocker
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 
@@ -12,12 +12,14 @@ class DMPlaceholders : PlaceholderExpansion() {
         return "dmrp"
     }
 
+    @Suppress("UnstableApiUsage")
     override fun getAuthor(): String {
-        return DMRP.getInstance().description.authors.joinToString()
+        return DMRP.getInstance().pluginMeta.authors.joinToString()
     }
 
+    @Suppress("UnstableApiUsage")
     override fun getVersion(): String {
-        return DMRP.getInstance().description.version
+        return DMRP.getInstance().pluginMeta.version
     }
 
     override fun persist(): Boolean {
@@ -30,18 +32,18 @@ class DMPlaceholders : PlaceholderExpansion() {
         }
 
         if (params.equals("leashed", ignoreCase = true)) {
-            return if (hasLeashSession(player)) {
-                languageConfiguration.getString("placeholder.leash.leashed")!!
+            return if (PlayerLeash.hasSession(player)) {
+                RPConfig.languageConfiguration.getString("placeholder.leash.leashed")!!
             } else {
-                languageConfiguration.getString("placeholder.leash.not_leashed")!!
+                RPConfig.languageConfiguration.getString("placeholder.leash.not_leashed")!!
             }
         }
 
         if (params.equals("lockinv", ignoreCase = true)) {
-            return if (hasLockSession(player)) {
-                languageConfiguration.getString("placeholder.lockinv.locked")!!
+            return if (InventoryLocker.hasSession(player)) {
+                RPConfig.languageConfiguration.getString("placeholder.lockinv.locked")!!
             } else {
-                languageConfiguration.getString("placeholder.lockinv.unlocked")!!
+                RPConfig.languageConfiguration.getString("placeholder.lockinv.unlocked")!!
             }
         }
 

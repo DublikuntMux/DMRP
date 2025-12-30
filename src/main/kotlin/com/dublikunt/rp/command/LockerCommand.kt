@@ -1,100 +1,100 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.languageConfiguration
-import com.dublikunt.rp.config.settings
-import com.dublikunt.rp.locker.addLockSession
-import com.dublikunt.rp.locker.getLockSession
-import com.dublikunt.rp.locker.hasLockSession
-import com.dublikunt.rp.locker.removeLockSession
-import com.dublikunt.rp.util.say
+import com.dublikunt.rp.config.RPConfig
+import com.dublikunt.rp.locker.InventoryLocker
+import com.dublikunt.rp.util.ChatUtils
+import io.papermc.paper.command.brigadier.BasicCommand
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 
-class LockerCommand : CommandExecutor, TabExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
+@Suppress("UnstableApiUsage")
+class LockerCommand : BasicCommand {
+    override fun execute(
+        commandSourceStack: CommandSourceStack,
+        args: Array<out String>
+    ) {
+        val sender = commandSourceStack.sender
         if (sender !is Player) {
             sender.sendMessage("This command can only be run by a player.")
-            return true
+            return
         }
 
-        if (!sender.hasPermission("dmrp.lock.use")) {
-            say(sender, languageConfiguration.getString("message.inventory_lock.no_permission")!!)
-            return true
-        }
-
-        if (args.isNullOrEmpty()) {
-            say(sender, languageConfiguration.getString("message.inventory_lock.error")!!)
-            return true
+        if (args.isEmpty()) {
+            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.error")!!)
+            return
         }
 
         val target = Bukkit.getPlayerExact(args[0])
         if (target == null) {
-            say(sender, languageConfiguration.getString("message.inventory_lock.not_found")!!)
-            return true
+            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.not_found")!!)
+            return
         }
 
         if (sender != target) {
             val distance = sender.location.distanceSquared(target.location)
-            if (distance > settings.lockDistance * settings.lockDistance) {
-                say(sender, languageConfiguration.getString("message.inventory_lock.too_far")!!)
-                return true
+            if (distance > RPConfig.settings.lockDistance * RPConfig.settings.lockDistance) {
+                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.too_far")!!)
+                return
             }
         }
 
-        if (hasLockSession(target)) {
-            val session = getLockSession(target)!!
+        if (InventoryLocker.hasSession(target)) {
+            val session = InventoryLocker.getSession(target)!!
             if (session.owner == sender || sender.hasPermission("dmrp.lock.admin")) {
-                removeLockSession(target)
-                say(
+                InventoryLocker.removeSession(target)
+                ChatUtils.say(
                     sender,
-                    String.format(languageConfiguration.getString("message.inventory_lock.unlock_owner")!!, target.name)
+                    String.format(
+                        RPConfig.languageConfiguration.getString("message.inventory_lock.unlock_owner")!!,
+                        ChatUtils.mm.serialize(target.name())
+                    )
                 )
-                say(
+                ChatUtils.say(
                     target,
                     String.format(
-                        languageConfiguration.getString("message.inventory_lock.unlock_target")!!,
-                        sender.name
+                        RPConfig.languageConfiguration.getString("message.inventory_lock.unlock_target")!!,
+                        ChatUtils.mm.serialize(sender.name())
                     )
                 )
             } else {
-                say(sender, languageConfiguration.getString("message.inventory_lock.not_owner")!!)
+                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.not_owner")!!)
             }
         } else {
             if (!target.hasPermission("dmrp.lock.can")) {
-                say(sender, languageConfiguration.getString("message.inventory_lock.cannot_lock")!!)
-                return true
+                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.cannot_lock")!!)
+                return
             }
-            addLockSession(sender, target)
-            say(
+            InventoryLocker.addSession(sender, target)
+            ChatUtils.say(
                 sender,
-                String.format(languageConfiguration.getString("message.inventory_lock.lock_owner")!!, target.name)
+                String.format(
+                    RPConfig.languageConfiguration.getString("message.inventory_lock.lock_owner")!!,
+                    ChatUtils.mm.serialize(target.name())
+                )
             )
-            say(
+            ChatUtils.say(
                 target,
-                String.format(languageConfiguration.getString("message.inventory_lock.lock_target")!!, sender.name)
+                String.format(
+                    RPConfig.languageConfiguration.getString("message.inventory_lock.lock_target")!!,
+                    ChatUtils.mm.serialize(sender.name())
+                )
             )
         }
-
-        return true
     }
 
-    override fun onTabComplete(
-        sender: CommandSender,
-        command: Command,
-        label: String,
-        args: Array<String>
-    ): List<String> {
+    override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
         if (args.size == 1) {
             val partialName = args[0].lowercase()
-            return sender.server.onlinePlayers
+            return commandSourceStack.sender.server.onlinePlayers
                 .map { it.name }
                 .filter { it.lowercase().startsWith(partialName) }
         }
 
         return emptyList()
+    }
+
+    override fun permission(): String {
+        return "dmrp.lock.use"
     }
 }
