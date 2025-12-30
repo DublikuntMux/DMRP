@@ -24,6 +24,7 @@ message:
   leash:
     error: "<red>You must provide a player to leash.</red>"
     not_found: "<red>Player not found.</red>"
+    self: "<red>You cannot leash yourself.</red>"
     too_far: "<red>Target is too far away.</red>"
     not_owner: "<red>You are not the owner of this leash.</red>"
     unleash_owner: "<green>You have unleashed %s.</green>"

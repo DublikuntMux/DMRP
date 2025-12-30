@@ -28,12 +28,15 @@ class LeashCommand : BasicCommand {
             return
         }
 
-        if (sender != target) {
-            val distance = sender.location.distanceSquared(target.location)
-            if (distance > RPConfig.settings.maxLeashDistance * RPConfig.settings.maxLeashDistance) {
-                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.too_far")!!)
-                return
-            }
+        if (target == sender) {
+            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.self")!!)
+            return
+        }
+
+        val distance = sender.location.distanceSquared(target.location)
+        if (distance > RPConfig.settings.maxLeashDistance * RPConfig.settings.maxLeashDistance) {
+            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.too_far")!!)
+            return
         }
 
         if (PlayerLeash.hasSession(target)) {
