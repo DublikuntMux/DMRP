@@ -11,7 +11,19 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 class InventoryLockPlayerListener : Listener {
     @EventHandler
     fun onPlayerLocker(event: PlayerInteractEntityEvent) {
-        if (event.player.inventory.getItem(event.hand).type == Material.CHAIN) {
+        val configMaterialName = RPConfig.settings.lockItem
+        val lockMaterial: Material
+        try {
+            lockMaterial = Material.matchMaterial(configMaterialName) ?: Material.CHAIN
+        } catch (e: NoSuchFieldError) {
+            ChatUtils.say("Invalid lock item material in config: $configMaterialName. Check is you write item name correctly and for your server version.")
+            return
+        }
+
+        val item = event.player.inventory.getItem(event.hand)
+        if (item.type == Material.AIR) return
+
+        if (item.type == lockMaterial) {
             if (event.player.hasPermission("dmrp.lock.use")) {
                 if (event.rightClicked is Player) {
                     val lockedPlayer = event.rightClicked as Player

@@ -73,10 +73,12 @@ object RPConfig {
             maxDices = pluginConfiguration.getInt("max_dices", 100),
             maxSides = pluginConfiguration.getInt("max_sides", 255),
 
-            maxLeashDistance = pluginConfiguration.getInt("leash_distance", 15),
-
             lockDistance = pluginConfiguration.getInt("lock_distance", 5),
-            leashSyncRate = pluginConfiguration.getInt("leash_sync_rate", 2)
+            lockItem = pluginConfiguration.getString("lock_item", "CHAIN") ?: "CHAIN",
+
+            maxLeashDistance = pluginConfiguration.getInt("leash_distance", 15),
+            leashSyncRate = pluginConfiguration.getInt("leash_sync_rate", 2),
+            leashItem = pluginConfiguration.getString("leash_item", "LEAD") ?: "LEAD",
         )
 
         settings = newSettings

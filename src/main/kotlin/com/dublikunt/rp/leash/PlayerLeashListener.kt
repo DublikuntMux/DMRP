@@ -40,7 +40,19 @@ class PlayerLeashListener : Listener {
 
     @EventHandler
     fun onPlayerLeash(event: PlayerInteractEntityEvent) {
-        if (event.player.inventory.getItem(event.hand).type == Material.LEAD) {
+        val configMaterialName = RPConfig.settings.leashItem
+        val leashMaterial: Material
+        try {
+            leashMaterial = Material.matchMaterial(configMaterialName) ?: Material.LEAD
+        } catch (e: NoSuchFieldError) {
+            ChatUtils.say("Invalid leash item material in config: $configMaterialName. Check is you write item name correctly and for your server version.")
+            return
+        }
+
+        val item = event.player.inventory.getItem(event.hand)
+        if (item.type == Material.AIR) return
+
+        if (item.type == leashMaterial) {
             if (event.player.hasPermission("dmrp.leash.use")) {
                 if (event.rightClicked is Player) {
                     val leashedPlayer = event.rightClicked as Player

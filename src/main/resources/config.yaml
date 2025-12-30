@@ -11,10 +11,14 @@ max_dices: 100
 # Max sides in dice
 max_sides: 255
 
+# Maximum how many blocks do you need to be from a player to lock him
+lock_distance: 5
+# Item used to lock players
+lock_item: "CHAIN"
+
 # Max leash distance.
 leash_distance: 15
 # How often need to sync leash position in clients in ticks
 leash_sync_rate: 2
-
-# Maximum how many blocks do you need to be from a player to lock him
-lock_distance: 5
+# Item used to leash player
+leash_item: "LEAD"

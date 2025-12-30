@@ -9,8 +9,10 @@ data class Settings(
     val maxDices: Int = 100,
     val maxSides: Int = 255,
 
-    val maxLeashDistance: Int = 15,
-
     val lockDistance: Int = 5,
-    val leashSyncRate: Int = 2
+    val lockItem: String = "CHAIN",
+
+    val maxLeashDistance: Int = 15,
+    val leashSyncRate: Int = 2,
+    val leashItem: String = "LEAD",
 )
