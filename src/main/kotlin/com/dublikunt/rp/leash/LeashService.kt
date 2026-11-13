@@ -89,8 +89,8 @@ class LeashService(
         restartSyncTask()
     }
 
-    fun reloadSchedule() {
-        restartSyncTask()
+    fun reloadSchedule(syncRate: Int) {
+        restartSyncTask(syncRate)
     }
 
     fun shutdown() {
@@ -157,10 +157,11 @@ class LeashService(
         }
     }
 
-    private fun restartSyncTask() {
+    private fun restartSyncTask(syncRate: Int = config.settings.leashSyncRate) {
+        val rate = syncRate.toLong()
+        val replacement = plugin.server.scheduler.runTaskTimer(plugin, Runnable(::syncLeashes), rate, rate)
         syncTask?.cancel()
-        val rate = config.settings.leashSyncRate.toLong()
-        syncTask = plugin.server.scheduler.runTaskTimer(plugin, Runnable(::syncLeashes), rate, rate)
+        syncTask = replacement
     }
 
     private fun followLeashed() {

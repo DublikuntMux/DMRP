@@ -29,7 +29,7 @@ class TryCommand(
     }
 
     override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
-        return config.language.getStringList("message.try.suggestion")
+        return config.language.trySuggestions
     }
 
     override fun permission(): String {

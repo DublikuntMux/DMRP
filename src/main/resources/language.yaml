@@ -6,7 +6,7 @@ message:
     successful: "%who% %what% <green>successful</green>." # %who% - player name, %what% - what say
     unsuccessful: "%who% %what% <red>unsuccessful</red>." # %who% - player name, %what% - what say
     error: "<red>No try text specified.</red>"
-    suggestion: # suggestion for try command (can be null)
+    suggestion: # /try suggestions; use [] or null, or omit this key, to disable
       - "crack lock"
       - "secretly took out item"
       - "dodged the ..."
@@ -45,6 +45,7 @@ message:
     cannot_lock: "<red>You cannot lock this player's inventory.</red>"
 
   reload: "Config <green>reloaded!</green>"
+  reload_failed: "<red>Configuration reload failed. Previous settings are still active; check the console for details.</red>"
 
 # Not support MiniMassages and PlaceholderAPI
 placeholder:

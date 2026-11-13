@@ -6,12 +6,12 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 
 @Suppress("UnstableApiUsage")
 class ReloadCommand(
-    private val reload: () -> Unit,
+    private val reload: () -> Boolean,
     private val messages: MessageService,
 ) : BasicCommand {
     override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
-        reload()
-        messages.send(commandSourceStack.sender, messages.raw("message.reload"))
+        val key = if (reload()) "message.reload" else "message.reload_failed"
+        messages.send(commandSourceStack.sender, messages.raw(key))
     }
 
     override fun permission(): String {

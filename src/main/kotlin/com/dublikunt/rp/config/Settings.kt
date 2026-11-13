@@ -3,18 +3,18 @@ package com.dublikunt.rp.config
 import org.bukkit.Material
 
 data class Settings(
-    val sayDistance: Int = 30,
-    val update: Boolean = true,
+    val sayDistance: Int,
+    val update: Boolean,
 
-    val successChance: Int = 50,
+    val successChance: Int,
 
-    val maxDice: Int = 100,
-    val maxSides: Int = 255,
+    val maxDice: Int,
+    val maxSides: Int,
 
-    val lockDistance: Int = 5,
-    val lockItem: Material = Material.IRON_CHAIN,
+    val lockDistance: Int,
+    val lockItem: Material,
 
-    val maxLeashDistance: Int = 15,
-    val leashSyncRate: Int = 2,
-    val leashItem: Material = Material.LEAD,
+    val maxLeashDistance: Int,
+    val leashSyncRate: Int,
+    val leashItem: Material,
 )

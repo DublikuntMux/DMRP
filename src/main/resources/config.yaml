@@ -1,24 +1,31 @@
-# Player command output hear distance in blocks
+# DO NOT CHANGE THIS MANUALLY
+# Configuration schema version.
+# Older files without this key are treated as version 1.
+config-version: 1
+
+# Command message hearing distance in blocks. Must be >= 0.
 hear_distance: 30
-# Show update message on startup.
+# Check for updates on startup. Changes take effect on the next server restart.
 update: true
 
-# Change to get success on try command
+# /try success chance as a percentage, from 0 to 100.
+# The existing key spelling is retained for compatibility.
 success_change: 50
 
-# Max dices to throw in one shot
+# Maximum dice per roll, from 1 to 10000.
 max_dices: 100
-# Max sides in dice
+# Maximum sides per die, from 1 to 100000.
 max_sides: 255
 
-# Maximum how many blocks do you need to be from a player to lock him
+# Maximum distance in blocks for locking another player's inventory. Must be >= 0.
 lock_distance: 5
-# Item used to lock players (renamed from CHAIN in 26.3)
+# Non-air item material used to lock players (renamed from CHAIN in 26.3).
 lock_item: "IRON_CHAIN"
 
-# Max leash distance.
+# Maximum leash distance in blocks. Must be >= 0.
 leash_distance: 15
-# How often need to sync leash position in clients in ticks
+# Client leash-position synchronization interval in server ticks, from 1 to 200.
+# 20 ticks = 1 second at normal server tick rate.
 leash_sync_rate: 2
-# Item used to leash player
+# Non-air item material used to leash players.
 leash_item: "LEAD"

@@ -6,6 +6,7 @@ import com.dublikunt.rp.command.LeashCommand
 import com.dublikunt.rp.command.LockerCommand
 import com.dublikunt.rp.command.ReloadCommand
 import com.dublikunt.rp.command.TryCommand
+import com.dublikunt.rp.config.ConfigurationException
 import com.dublikunt.rp.config.PluginConfig
 import com.dublikunt.rp.leash.LeashService
 import com.dublikunt.rp.locker.InventoryLockService
@@ -15,6 +16,7 @@ import com.github.retrooper.packetevents.PacketEvents
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.logging.Level
 
 class DMRP : JavaPlugin() {
     lateinit var configuration: PluginConfig
@@ -38,7 +40,13 @@ class DMRP : JavaPlugin() {
 
     override fun onEnable() {
         configuration = PluginConfig(this)
-        configuration.load()
+        try {
+            configuration.load()
+        } catch (exception: ConfigurationException) {
+            logger.severe("Could not load configuration: ${exception.message}")
+            server.pluginManager.disablePlugin(this)
+            return
+        }
 
         messages = MessageService(this, configuration)
         leashes = LeashService(this, configuration, messages)
@@ -55,9 +63,17 @@ class DMRP : JavaPlugin() {
         updateChecker.checkAsync()
     }
 
-    fun reloadConfiguration() {
-        configuration.load()
-        leashes.reloadSchedule()
+    fun reloadConfiguration(): Boolean {
+        return try {
+            configuration.load { leashes.reloadSchedule(it.leashSyncRate) }
+            true
+        } catch (exception: ConfigurationException) {
+            logger.warning("Configuration reload rejected; previous settings remain active: ${exception.message}")
+            false
+        } catch (exception: Exception) {
+            logger.log(Level.SEVERE, "Could not apply configuration; previous settings remain active.", exception)
+            false
+        }
     }
 
     @Suppress("UnstableApiUsage")

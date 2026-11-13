@@ -19,7 +19,7 @@ class MessageService(
     private val placeholderResolver: PlaceholderResolver? = createPlaceholderResolver()
 
     fun raw(key: String): String {
-        return config.language.getString(key) ?: key
+        return config.language.message(key)
     }
 
     fun format(key: String, vararg args: Any): String {
@@ -66,7 +66,7 @@ class MessageService(
         } else {
             text
         }
-        val prefix = config.language.getString("prefix").orEmpty()
+        val prefix = config.language.prefix
         return miniMessage.deserialize("$prefix > $resolved")
     }
 
