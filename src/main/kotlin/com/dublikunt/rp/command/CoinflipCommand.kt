@@ -1,26 +1,19 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.RPConfig
-import com.dublikunt.rp.util.ChatUtils
+import com.dublikunt.rp.message.MessageService
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import java.util.concurrent.ThreadLocalRandom
 
 @Suppress("UnstableApiUsage")
-class CoinflipCommand : BasicCommand {
-    override fun execute(
-        commandSourceStack: CommandSourceStack,
-        args: Array<out String>
-    ) {
-        val x = ThreadLocalRandom.current().nextInt(100) + 1 <= 50
-        val name = ChatUtils.mm.serialize(commandSourceStack.sender.name())
-        val massage: String = if (x) {
-            String.format(RPConfig.languageConfiguration.getString("message.coinflip.heads")!!, name)
+class CoinflipCommand(private val messages: MessageService) : BasicCommand {
+    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
+        val key = if (ThreadLocalRandom.current().nextBoolean()) {
+            "message.coinflip.heads"
         } else {
-            String.format(RPConfig.languageConfiguration.getString("message.coinflip.tails")!!, name)
+            "message.coinflip.tails"
         }
-
-        ChatUtils.sayDistance(commandSourceStack.sender, massage)
+        messages.sendNear(commandSourceStack.sender, messages.format(key, commandSourceStack.sender.name))
     }
 
     override fun permission(): String {

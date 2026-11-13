@@ -13,8 +13,8 @@ max_sides: 255
 
 # Maximum how many blocks do you need to be from a player to lock him
 lock_distance: 5
-# Item used to lock players
-lock_item: "CHAIN"
+# Item used to lock players (renamed from CHAIN in 26.3)
+lock_item: "IRON_CHAIN"
 
 # Max leash distance.
 leash_distance: 15

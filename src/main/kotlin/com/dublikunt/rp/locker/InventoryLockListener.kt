@@ -9,40 +9,36 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
-class InventoryLockListener : Listener {
+class InventoryLockListener(private val locks: InventoryLockService) : Listener {
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
-        val player = event.whoClicked
-        if (player is Player) {
-            val session = InventoryLocker.getSession(player) ?: return
-            if (session.locked != player)
-                return
+        val player = event.whoClicked as? Player ?: return
+        if (!locks.isLocked(player)) {
+            return
+        }
 
-            if (event.view.topInventory == event.clickedInventory || event.clickedInventory != null) {
-                event.isCancelled = true
-            }
+        if (event.clickedInventory != null) {
+            event.isCancelled = true
         }
     }
 
     @EventHandler
     fun onInventoryDrag(event: InventoryDragEvent) {
-        val player = event.whoClicked
-        if (player is Player) {
-            val session = InventoryLocker.getSession(player) ?: return
-            if (session.locked != player)
-                return
-
-            event.isCancelled = true
+        val player = event.whoClicked as? Player ?: return
+        if (!locks.isLocked(player)) {
+            return
         }
+
+        event.isCancelled = true
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        InventoryLocker.removeSession(event.player)
+        locks.removeSessionsInvolving(event.player)
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerDeath(event: PlayerDeathEvent) {
-        InventoryLocker.removeSession(event.entity)
+        locks.removeSessionsInvolving(event.entity)
     }
 }

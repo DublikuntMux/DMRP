@@ -3,7 +3,7 @@ package com.dublikunt.rp.leash
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerAttachEntity
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata
 import org.bukkit.entity.Player
-import java.util.*
+import java.util.UUID
 
 class LeashSession(
     val owner: Player,
@@ -12,5 +12,5 @@ class LeashSession(
     val slimeUUID: UUID,
     val leashPacket: WrapperPlayServerAttachEntity,
     val dataPacket: WrapperPlayServerEntityMetadata,
-    val viewers: MutableSet<UUID> = mutableSetOf()
+    val viewers: MutableSet<UUID> = HashSet(),
 )

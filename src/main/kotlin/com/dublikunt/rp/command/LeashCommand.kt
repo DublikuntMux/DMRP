@@ -1,82 +1,46 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.RPConfig
-import com.dublikunt.rp.leash.PlayerLeash
-import com.dublikunt.rp.util.ChatUtils
+import com.dublikunt.rp.config.PluginConfig
+import com.dublikunt.rp.message.MessageService
+import com.dublikunt.rp.leash.LeashService
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
-import org.bukkit.Bukkit
+import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
 @Suppress("UnstableApiUsage")
-class LeashCommand : BasicCommand {
+class LeashCommand(
+    private val config: PluginConfig,
+    private val messages: MessageService,
+    private val leashes: LeashService,
+) : BasicCommand {
     override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
         val sender = commandSourceStack.sender
         if (sender !is Player) {
-            sender.sendMessage("This command can only be run by a player.")
+            sender.sendMessage(Component.text("This command can only be run by a player."))
             return
         }
 
         if (args.isEmpty()) {
-            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.error")!!)
+            messages.send(sender, messages.raw("message.leash.error"))
             return
         }
 
-        val target = Bukkit.getPlayerExact(args[0])
+        val target = sender.server.getPlayerExact(args[0])
         if (target == null) {
-            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.not_found")!!)
+            messages.send(sender, messages.raw("message.leash.not_found"))
             return
         }
 
-        if (target == sender) {
-            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.self")!!)
+        val maxDistance = config.settings.maxLeashDistance.toDouble()
+        if (sender.world !== target.world ||
+            sender.location.distanceSquared(target.location) > maxDistance * maxDistance
+        ) {
+            messages.send(sender, messages.raw("message.leash.too_far"))
             return
         }
 
-        val distance = sender.location.distanceSquared(target.location)
-        if (distance > RPConfig.settings.maxLeashDistance * RPConfig.settings.maxLeashDistance) {
-            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.too_far")!!)
-            return
-        }
-
-        if (PlayerLeash.hasSession(target)) {
-            val session = PlayerLeash.getSession(target)!!
-            if (session.owner == sender || sender.hasPermission("dmrp.leash.admin")) {
-                PlayerLeash.removeSession(target)
-                ChatUtils.say(
-                    sender,
-                    String.format(
-                        RPConfig.languageConfiguration.getString("message.leash.unleash_owner")!!,
-                        ChatUtils.mm.serialize(target.name())
-                    )
-                )
-                ChatUtils.say(
-                    target,
-                    String.format(
-                        RPConfig.languageConfiguration.getString("message.leash.unleash_target")!!,
-                        ChatUtils.mm.serialize(sender.name())
-                    )
-                )
-            } else {
-                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.leash.not_owner")!!)
-            }
-        } else {
-            PlayerLeash.addSession(sender, target)
-            ChatUtils.say(
-                sender,
-                String.format(
-                    RPConfig.languageConfiguration.getString("message.leash.leash_owner")!!,
-                    ChatUtils.mm.serialize(target.name())
-                )
-            )
-            ChatUtils.say(
-                target,
-                String.format(
-                    RPConfig.languageConfiguration.getString("message.leash.leash_target")!!,
-                    ChatUtils.mm.serialize(sender.name())
-                )
-            )
-        }
+        leashes.toggle(sender, target)
     }
 
     override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {

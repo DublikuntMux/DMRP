@@ -1,46 +1,35 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.RPConfig
-import com.dublikunt.rp.util.ChatUtils
-import com.dublikunt.rp.util.TextUtils
+import com.dublikunt.rp.config.PluginConfig
+import com.dublikunt.rp.message.MessageService
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import java.util.concurrent.ThreadLocalRandom
 
 @Suppress("UnstableApiUsage")
-class TryCommand : BasicCommand {
-    override fun execute(
-        commandSourceStack: CommandSourceStack,
-        args: Array<out String>
-    ) {
+class TryCommand(
+    private val config: PluginConfig,
+    private val messages: MessageService,
+) : BasicCommand {
+    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
+        val sender = commandSourceStack.sender
         if (args.isEmpty()) {
-            ChatUtils.say(commandSourceStack.sender, RPConfig.languageConfiguration.getString("message.try.error")!!)
-        } else {
-            val x = ThreadLocalRandom.current().nextInt(100) + 1 <= RPConfig.settings.successChange
-            val massage: String
-            val who = ChatUtils.mm.serialize(commandSourceStack.sender.name())
-            val what = args.joinToString(" ")
-            val placeholders = mapOf(
-                "who" to who,
-                "what" to what
-            )
-            massage = if (x) {
-                TextUtils.replacePlaceholders(
-                    RPConfig.languageConfiguration.getString("message.try.successful")!!,
-                    placeholders
-                )
-            } else {
-                TextUtils.replacePlaceholders(
-                    RPConfig.languageConfiguration.getString("message.try.unsuccessful")!!,
-                    placeholders
-                )
-            }
-            ChatUtils.sayDistance(commandSourceStack.sender, massage)
+            messages.send(sender, messages.raw("message.try.error"))
+            return
         }
+
+        val success = ThreadLocalRandom.current().nextInt(100) < config.settings.successChance
+        val key = if (success) "message.try.successful" else "message.try.unsuccessful"
+        val text = messages.formatNamed(
+            key,
+            "who" to sender.name,
+            "what" to args.joinToString(" "),
+        )
+        messages.sendNear(sender, text)
     }
 
     override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
-        return RPConfig.languageConfiguration.getStringList("message.try.suggestion")
+        return config.language.getStringList("message.try.suggestion")
     }
 
     override fun permission(): String {

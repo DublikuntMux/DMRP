@@ -1,86 +1,48 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.RPConfig
-import com.dublikunt.rp.locker.InventoryLocker
-import com.dublikunt.rp.util.ChatUtils
+import com.dublikunt.rp.config.PluginConfig
+import com.dublikunt.rp.locker.InventoryLockService
+import com.dublikunt.rp.message.MessageService
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
-import org.bukkit.Bukkit
+import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
 @Suppress("UnstableApiUsage")
-class LockerCommand : BasicCommand {
-    override fun execute(
-        commandSourceStack: CommandSourceStack,
-        args: Array<out String>
-    ) {
+class LockerCommand(
+    private val config: PluginConfig,
+    private val messages: MessageService,
+    private val locks: InventoryLockService,
+) : BasicCommand {
+    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
         val sender = commandSourceStack.sender
         if (sender !is Player) {
-            sender.sendMessage("This command can only be run by a player.")
+            sender.sendMessage(Component.text("This command can only be run by a player."))
             return
         }
 
         if (args.isEmpty()) {
-            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.error")!!)
+            messages.send(sender, messages.raw("message.inventory_lock.error"))
             return
         }
 
-        val target = Bukkit.getPlayerExact(args[0])
+        val target = sender.server.getPlayerExact(args[0])
         if (target == null) {
-            ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.not_found")!!)
+            messages.send(sender, messages.raw("message.inventory_lock.not_found"))
             return
         }
 
-        if (sender != target) {
-            val distance = sender.location.distanceSquared(target.location)
-            if (distance > RPConfig.settings.lockDistance * RPConfig.settings.lockDistance) {
-                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.too_far")!!)
+        if (sender !== target) {
+            val maxDistance = config.settings.lockDistance.toDouble()
+            if (sender.world !== target.world ||
+                sender.location.distanceSquared(target.location) > maxDistance * maxDistance
+            ) {
+                messages.send(sender, messages.raw("message.inventory_lock.too_far"))
                 return
             }
         }
 
-        if (InventoryLocker.hasSession(target)) {
-            val session = InventoryLocker.getSession(target)!!
-            if (session.owner == sender || sender.hasPermission("dmrp.lock.admin")) {
-                InventoryLocker.removeSession(target)
-                ChatUtils.say(
-                    sender,
-                    String.format(
-                        RPConfig.languageConfiguration.getString("message.inventory_lock.unlock_owner")!!,
-                        ChatUtils.mm.serialize(target.name())
-                    )
-                )
-                ChatUtils.say(
-                    target,
-                    String.format(
-                        RPConfig.languageConfiguration.getString("message.inventory_lock.unlock_target")!!,
-                        ChatUtils.mm.serialize(sender.name())
-                    )
-                )
-            } else {
-                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.not_owner")!!)
-            }
-        } else {
-            if (!target.hasPermission("dmrp.lock.can")) {
-                ChatUtils.say(sender, RPConfig.languageConfiguration.getString("message.inventory_lock.cannot_lock")!!)
-                return
-            }
-            InventoryLocker.addSession(sender, target)
-            ChatUtils.say(
-                sender,
-                String.format(
-                    RPConfig.languageConfiguration.getString("message.inventory_lock.lock_owner")!!,
-                    ChatUtils.mm.serialize(target.name())
-                )
-            )
-            ChatUtils.say(
-                target,
-                String.format(
-                    RPConfig.languageConfiguration.getString("message.inventory_lock.lock_target")!!,
-                    ChatUtils.mm.serialize(sender.name())
-                )
-            )
-        }
+        locks.toggle(sender, target)
     }
 
     override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {

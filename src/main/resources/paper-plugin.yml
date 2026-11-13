@@ -1,6 +1,5 @@
 name: DMRP
 main: com.dublikunt.rp.DMRP
-loader: com.dublikunt.rp.DMRPLoader
 version: "${version}"
 api-version: "${apiVersion}"
 load: POSTWORLD

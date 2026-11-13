@@ -1,25 +1,30 @@
 package com.dublikunt.rp
 
-import com.dublikunt.rp.config.RPConfig
-import com.dublikunt.rp.leash.PlayerLeash
-import com.dublikunt.rp.locker.InventoryLocker
+import com.dublikunt.rp.leash.LeashService
+import com.dublikunt.rp.locker.InventoryLockService
+import com.dublikunt.rp.message.MessageService
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
+import java.util.Locale
 
-
-class DMPlaceholders : PlaceholderExpansion() {
+class DMPlaceholders(
+    private val plugin: DMRP,
+    private val messages: MessageService,
+    private val leashes: LeashService,
+    private val locks: InventoryLockService,
+) : PlaceholderExpansion() {
     override fun getIdentifier(): String {
         return "dmrp"
     }
 
     @Suppress("UnstableApiUsage")
     override fun getAuthor(): String {
-        return DMRP.getInstance().pluginMeta.authors.joinToString()
+        return plugin.pluginMeta.authors.joinToString()
     }
 
     @Suppress("UnstableApiUsage")
     override fun getVersion(): String {
-        return DMRP.getInstance().pluginMeta.version
+        return plugin.pluginMeta.version
     }
 
     override fun persist(): Boolean {
@@ -31,22 +36,24 @@ class DMPlaceholders : PlaceholderExpansion() {
             return null
         }
 
-        if (params.equals("leashed", ignoreCase = true)) {
-            return if (PlayerLeash.hasSession(player)) {
-                RPConfig.languageConfiguration.getString("placeholder.leash.leashed")!!
-            } else {
-                RPConfig.languageConfiguration.getString("placeholder.leash.not_leashed")!!
-            }
-        }
+        return when (params.lowercase(Locale.ROOT)) {
+            "leashed" -> messages.raw(
+                if (leashes.isLeashed(player)) {
+                    "placeholder.leash.leashed"
+                } else {
+                    "placeholder.leash.not_leashed"
+                }
+            )
 
-        if (params.equals("lockinv", ignoreCase = true)) {
-            return if (InventoryLocker.hasSession(player)) {
-                RPConfig.languageConfiguration.getString("placeholder.lockinv.locked")!!
-            } else {
-                RPConfig.languageConfiguration.getString("placeholder.lockinv.unlocked")!!
-            }
-        }
+            "lockinv" -> messages.raw(
+                if (locks.isLocked(player)) {
+                    "placeholder.lockinv.locked"
+                } else {
+                    "placeholder.lockinv.unlocked"
+                }
+            )
 
-        return null
+            else -> null
+        }
     }
 }

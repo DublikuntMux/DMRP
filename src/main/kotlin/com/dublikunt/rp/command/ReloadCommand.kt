@@ -1,18 +1,17 @@
 package com.dublikunt.rp.command
 
-import com.dublikunt.rp.config.RPConfig
-import com.dublikunt.rp.util.ChatUtils
+import com.dublikunt.rp.message.MessageService
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 
 @Suppress("UnstableApiUsage")
-class ReloadCommand : BasicCommand {
-    override fun execute(
-        commandSourceStack: CommandSourceStack,
-        args: Array<out String>
-    ) {
-        RPConfig.reload()
-        ChatUtils.say(commandSourceStack.sender, RPConfig.languageConfiguration.getString("message.reload")!!)
+class ReloadCommand(
+    private val reload: () -> Unit,
+    private val messages: MessageService,
+) : BasicCommand {
+    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
+        reload()
+        messages.send(commandSourceStack.sender, messages.raw("message.reload"))
     }
 
     override fun permission(): String {
