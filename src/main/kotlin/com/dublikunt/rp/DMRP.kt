@@ -15,6 +15,7 @@ import com.dublikunt.rp.update.UpdateChecker
 import com.github.retrooper.packetevents.PacketEvents
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bstats.bukkit.Metrics
+import org.bukkit.command.TabExecutor
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Level
 
@@ -83,6 +84,11 @@ class DMRP : JavaPlugin() {
         registerCommand("dice", DiceCommand(configuration, messages))
         registerCommand("leash", LeashCommand(configuration, messages, leashes))
         registerCommand("lockinv", LockerCommand(configuration, messages, locks))
+    }
+
+    private fun registerCommand(name: String, executor: TabExecutor) {
+        val command = getCommand(name) ?: error("Command '$name' is not declared in plugin.yml.")
+        command.setExecutor(executor)
     }
 
     private fun registerPlaceholders() {

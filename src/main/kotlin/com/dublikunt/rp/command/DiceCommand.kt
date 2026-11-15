@@ -2,17 +2,21 @@ package com.dublikunt.rp.command
 
 import com.dublikunt.rp.config.PluginConfig
 import com.dublikunt.rp.message.MessageService
-import io.papermc.paper.command.brigadier.BasicCommand
-import io.papermc.paper.command.brigadier.CommandSourceStack
+import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 import java.util.concurrent.ThreadLocalRandom
 
 class DiceCommand(
     private val config: PluginConfig,
     private val messages: MessageService,
-) : BasicCommand {
-    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
-        val sender = commandSourceStack.sender
+) : TabExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+        execute(sender, args)
+        return true
+    }
+
+    private fun execute(sender: CommandSender, args: Array<out String>) {
         val maxDice = config.settings.maxDice
         val maxSides = config.settings.maxSides
 
@@ -48,16 +52,17 @@ class DiceCommand(
         messages.sendNear(sender, messages.format(key, sender.name) + rolls)
     }
 
-    override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>,
+    ): List<String> {
         if (args.size == 1) {
             return listOf("1", "2", "3", "4", "5", "6", config.settings.maxDice.toString())
         } else if (args.size == 2) {
             return listOf("4", "6", "12", "20", "100", config.settings.maxSides.toString())
         }
         return emptyList()
-    }
-
-    override fun permission(): String {
-        return "dmrp.command.dice"
     }
 }

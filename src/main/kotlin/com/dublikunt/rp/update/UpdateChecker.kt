@@ -4,7 +4,7 @@ import com.dublikunt.rp.DMRP
 import com.dublikunt.rp.config.PluginConfig
 import com.dublikunt.rp.message.MessageService
 import com.google.gson.JsonParser
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import org.bukkit.scheduler.BukkitTask
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -20,7 +20,7 @@ class UpdateChecker(
         .connectTimeout(REQUEST_TIMEOUT)
         .followRedirects(HttpClient.Redirect.NORMAL)
         .build()
-    private var task: ScheduledTask? = null
+    private var task: BukkitTask? = null
 
     fun checkAsync() {
         if (!config.settings.update) {
@@ -28,14 +28,12 @@ class UpdateChecker(
         }
 
         task?.cancel()
-        task = plugin.server.asyncScheduler.runNow(plugin) {
-            check()
-        }
+        task = plugin.server.scheduler.runTaskAsynchronously(plugin, Runnable(::check))
     }
 
     private fun check() {
         val latestVersion = fetchLatestVersion() ?: return
-        val currentVersion = plugin.pluginMeta.version
+        val currentVersion = plugin.description.version
         if (!isNewerVersion(currentVersion, latestVersion)) {
             return
         }
@@ -52,7 +50,7 @@ class UpdateChecker(
     private fun fetchLatestVersion(): String? {
         val request = HttpRequest.newBuilder(URI.create(VERSIONS_URL))
             .timeout(REQUEST_TIMEOUT)
-            .header("User-Agent", "DMRP/${plugin.pluginMeta.version}")
+            .header("User-Agent", "DMRP/${plugin.description.version}")
             .GET()
             .build()
 
@@ -78,7 +76,6 @@ class UpdateChecker(
     override fun close() {
         task?.cancel()
         task = null
-        httpClient.shutdownNow()
     }
 
     companion object {

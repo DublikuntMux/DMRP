@@ -9,13 +9,16 @@ plugins {
 group = "com.dublikunt"
 version = "1.8.1"
 
-val mcApiVersion = providers.gradleProperty("mcApiVersion").get()
 val paperApiVersion = providers.gradleProperty("paperApiVersion").get()
 val bstatsVersion = providers.gradleProperty("bstatsVersion").get()
 val placeholderVersion = providers.gradleProperty("placeholderVersion").get()
 val kotlinVersion = providers.gradleProperty("kotlinVersion").get()
 val gsonVersion = providers.gradleProperty("gsonVersion").get()
 val packeteventsVersion = providers.gradleProperty("packeteventsVersion").get()
+val pluginApiVersion = providers.gradleProperty("pluginApiVersion").get()
+val javaVersion = providers.gradleProperty("javaVersion").get().toInt()
+val runMinecraftVersion = providers.gradleProperty("runMinecraftVersion").get()
+val runJavaVersion = providers.gradleProperty("runJavaVersion").get().toInt()
 
 repositories {
     mavenCentral()
@@ -39,8 +42,8 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(25)
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_25)
+    jvmToolchain(javaVersion)
+    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
 }
 
 runPaper {
@@ -49,7 +52,8 @@ runPaper {
 
 tasks {
     runServer {
-        minecraftVersion(mcApiVersion)
+        minecraftVersion(runMinecraftVersion)
+        javaLauncher.set(project.javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(runJavaVersion)) })
         pluginJars(shadowJar.flatMap { it.archiveFile })
     }
 
@@ -60,7 +64,7 @@ tasks {
     processResources {
         val props = mapOf(
             "version" to version,
-            "apiVersion" to mcApiVersion,
+            "apiVersion" to pluginApiVersion,
             "kotlinVersion" to kotlinVersion,
         )
         inputs.properties(props)

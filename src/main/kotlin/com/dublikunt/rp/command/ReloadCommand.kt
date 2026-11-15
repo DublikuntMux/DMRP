@@ -1,19 +1,24 @@
 package com.dublikunt.rp.command
 
 import com.dublikunt.rp.message.MessageService
-import io.papermc.paper.command.brigadier.BasicCommand
-import io.papermc.paper.command.brigadier.CommandSourceStack
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 
 class ReloadCommand(
     private val reload: () -> Boolean,
     private val messages: MessageService,
-) : BasicCommand {
-    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
+) : TabExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val key = if (reload()) "message.reload" else "message.reload_failed"
-        messages.send(commandSourceStack.sender, messages.raw(key))
+        messages.send(sender, messages.raw(key))
+        return true
     }
 
-    override fun permission(): String {
-        return "dmrp.command.reload"
-    }
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>,
+    ): List<String> = emptyList()
 }

@@ -19,7 +19,8 @@ max_sides: 255
 
 # Maximum distance in blocks for locking another player's inventory. Must be >= 0.
 lock_distance: 5
-# Non-air item material used to lock players (renamed from CHAIN in 26.3).
+# Non-air item material used to lock players.
+# CHAIN and IRON_CHAIN (its name since Minecraft 1.21.9) both work on every server version.
 lock_item: "IRON_CHAIN"
 
 # Maximum leash distance in blocks. Must be >= 0.

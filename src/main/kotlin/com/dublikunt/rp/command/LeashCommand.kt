@@ -3,18 +3,23 @@ package com.dublikunt.rp.command
 import com.dublikunt.rp.config.PluginConfig
 import com.dublikunt.rp.message.MessageService
 import com.dublikunt.rp.leash.LeashService
-import io.papermc.paper.command.brigadier.BasicCommand
-import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 
 class LeashCommand(
     private val config: PluginConfig,
     private val messages: MessageService,
     private val leashes: LeashService,
-) : BasicCommand {
-    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
-        val sender = commandSourceStack.sender
+) : TabExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+        execute(sender, args)
+        return true
+    }
+
+    private fun execute(sender: CommandSender, args: Array<out String>) {
         if (sender !is Player) {
             sender.sendMessage(Component.text("This command can only be run by a player."))
             return
@@ -42,18 +47,19 @@ class LeashCommand(
         leashes.toggle(sender, target)
     }
 
-    override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>,
+    ): List<String> {
         if (args.size == 1) {
             val partialName = args[0].lowercase()
-            return commandSourceStack.sender.server.onlinePlayers
+            return sender.server.onlinePlayers
                 .map { it.name }
                 .filter { it.lowercase().startsWith(partialName) }
         }
 
         return emptyList()
-    }
-
-    override fun permission(): String {
-        return "dmrp.leash.use"
     }
 }

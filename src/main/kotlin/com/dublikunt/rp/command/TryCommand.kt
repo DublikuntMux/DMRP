@@ -2,16 +2,21 @@ package com.dublikunt.rp.command
 
 import com.dublikunt.rp.config.PluginConfig
 import com.dublikunt.rp.message.MessageService
-import io.papermc.paper.command.brigadier.BasicCommand
-import io.papermc.paper.command.brigadier.CommandSourceStack
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 import java.util.concurrent.ThreadLocalRandom
 
 class TryCommand(
     private val config: PluginConfig,
     private val messages: MessageService,
-) : BasicCommand {
-    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
-        val sender = commandSourceStack.sender
+) : TabExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+        execute(sender, args)
+        return true
+    }
+
+    private fun execute(sender: CommandSender, args: Array<out String>) {
         if (args.isEmpty()) {
             messages.send(sender, messages.raw("message.try.error"))
             return
@@ -27,11 +32,12 @@ class TryCommand(
         messages.sendNear(sender, text)
     }
 
-    override fun suggest(commandSourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>,
+    ): List<String> {
         return config.language.trySuggestions
-    }
-
-    override fun permission(): String {
-        return "dmrp.command.try"
     }
 }

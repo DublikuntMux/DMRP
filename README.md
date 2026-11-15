@@ -6,7 +6,7 @@
 
 ## Introduction
 
-DMRP is a Minecraft plugin designed to enhance role-playing experiences on your server. It introduces new commands and mechanics that can be used to create immersive role-playing scenarios. This plugin requires Paper 26.3 (Minecraft 26.3) or newer and Java 25.
+DMRP is a Minecraft plugin designed to enhance role-playing experiences on your server. It introduces new commands and mechanics that can be used to create immersive role-playing scenarios. This plugin runs on Paper (and its forks) from Minecraft 1.18.2 up to 26.3, with the Java version your server version requires (17 or newer).
 
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/dmrp)
 [![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg)](https://github.com/DublikuntMux/DMRP)
@@ -30,7 +30,7 @@ See command showcase on:
 
 ## Installation
 
-1. Install Java 25 and Paper 26.3 or newer.
+1. Run Paper 1.18.2 or newer (tested on 1.18.2, 1.20.4, 1.21.4 and 26.3).
 2. Install [PacketEvents](https://modrinth.com/plugin/packetevents) 2.14.0 or newer into your server's `plugins` directory.
 3. Download the latest version of DMRP from the [Modrinth](https://modrinth.com/plugin/dmrp) or [GitHub repository](https://github.com/DublikuntMux/DMRP).
 4. Place the downloaded `.jar` file into your server's `plugins` directory.

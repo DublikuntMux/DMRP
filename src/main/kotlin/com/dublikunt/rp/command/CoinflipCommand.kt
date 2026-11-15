@@ -1,21 +1,26 @@
 package com.dublikunt.rp.command
 
 import com.dublikunt.rp.message.MessageService
-import io.papermc.paper.command.brigadier.BasicCommand
-import io.papermc.paper.command.brigadier.CommandSourceStack
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 import java.util.concurrent.ThreadLocalRandom
 
-class CoinflipCommand(private val messages: MessageService) : BasicCommand {
-    override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
+class CoinflipCommand(private val messages: MessageService) : TabExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val key = if (ThreadLocalRandom.current().nextBoolean()) {
             "message.coinflip.heads"
         } else {
             "message.coinflip.tails"
         }
-        messages.sendNear(commandSourceStack.sender, messages.format(key, commandSourceStack.sender.name))
+        messages.sendNear(sender, messages.format(key, sender.name))
+        return true
     }
 
-    override fun permission(): String {
-        return "dmrp.command.coinflip"
-    }
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>,
+    ): List<String> = emptyList()
 }

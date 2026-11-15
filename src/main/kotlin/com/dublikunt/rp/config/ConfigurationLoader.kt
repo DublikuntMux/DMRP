@@ -8,6 +8,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
+import java.util.Locale
 
 internal data class ConfigurationSnapshot(
     val settings: Settings,
@@ -102,7 +103,7 @@ internal class ConfigurationLoader(
 
         fun material(path: String): Material {
             val value = value(path)
-            val material = (value as? String)?.trim()?.takeIf { it.isNotEmpty() }?.let(Material::matchMaterial)
+            val material = (value as? String)?.trim()?.takeIf { it.isNotEmpty() }?.let(::matchMaterial)
             if (material == null || material in AIR_MATERIALS || !isItem(material)) {
                 throw ConfigurationException("config.yaml: '$path' must name a non-air item material; got '$value'.")
             }
@@ -116,6 +117,17 @@ internal class ConfigurationLoader(
     }
 
     private companion object {
+        // Minecraft 1.21.9 renamed CHAIN to IRON_CHAIN. Accept either name on every server version.
+        val RENAMED_MATERIALS = mapOf(
+            "CHAIN" to "IRON_CHAIN",
+            "IRON_CHAIN" to "CHAIN",
+        )
+
+        fun matchMaterial(name: String): Material? {
+            return Material.matchMaterial(name)
+                ?: RENAMED_MATERIALS[name.removePrefix("minecraft:").uppercase(Locale.ROOT)]?.let(Material::matchMaterial)
+        }
+
         const val CONFIG_FILE = "config.yaml"
         const val LANGUAGE_FILE = "language.yaml"
         val AIR_MATERIALS = setOf(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR)

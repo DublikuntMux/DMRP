@@ -9,8 +9,8 @@ description: "Plugin that add new role play commands and mechanics to you server
 website: https://github.com/DublikuntMux/DMRP
 authors: [ "Dublikunt Max" ]
 
-dependencies: [packetevents]
-softDepends: [PlaceholderAPI]
+depend: [packetevents]
+softdepend: [PlaceholderAPI]
 
 commands:
   rp-reload:

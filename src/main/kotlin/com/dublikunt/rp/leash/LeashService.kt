@@ -4,16 +4,21 @@ import com.dublikunt.rp.DMRP
 import com.dublikunt.rp.config.PluginConfig
 import com.dublikunt.rp.message.MessageService
 import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.manager.server.ServerVersion
 import com.github.retrooper.packetevents.protocol.entity.EntityPositionData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
+import com.github.retrooper.packetevents.protocol.world.Location as PacketLocation
 import com.github.retrooper.packetevents.util.Vector3d
+import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerAttachEntity
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityPositionSync
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnLivingEntity
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
@@ -34,6 +39,7 @@ class LeashService(
     private val sessionsByOwner = HashMap<UUID, MutableSet<UUID>>()
     private var syncTask: BukkitTask? = null
     private var followTask: BukkitTask? = null
+    private val serverVersion: ServerVersion = PacketEvents.getAPI().serverManager.version
 
     fun isLeashed(player: OfflinePlayer): Boolean {
         return sessions.containsKey(player.uniqueId)
@@ -111,7 +117,12 @@ class LeashService(
             EntityData(4, EntityDataTypes.BOOLEAN, true), // Is silent
             EntityData(5, EntityDataTypes.BOOLEAN, true), // Has no gravity
             EntityData(15, EntityDataTypes.BYTE, 1.toByte()), // No AI
-            EntityData(18, EntityDataTypes.INT, 1), // Small
+            // Slimes became ageable in 26.2, which shifted the size index from 16 to 18.
+            EntityData(
+                if (serverVersion.isNewerThanOrEquals(ServerVersion.V_26_2)) 18 else 16,
+                EntityDataTypes.INT,
+                1,
+            ), // Small
         )
 
         val session = LeashSession(
@@ -219,16 +230,7 @@ class LeashService(
                 currentViewers.add(viewer.uniqueId)
 
                 if (!session.viewers.contains(viewer.uniqueId)) {
-                    val spawnPacket = WrapperPlayServerSpawnEntity(
-                        session.slimeId,
-                        session.slimeUUID,
-                        EntityTypes.SLIME,
-                        slimePosition,
-                        0.0f,
-                        0,
-                        null,
-                    )
-                    playerManager.sendPacket(viewer, spawnPacket)
+                    playerManager.sendPacket(viewer, createSpawnPacket(session, slimePosition))
                     playerManager.sendPacket(viewer, session.leashPacket)
                     playerManager.sendPacket(viewer, session.dataPacket)
 
@@ -236,12 +238,7 @@ class LeashService(
                         playerManager.sendPacket(viewer, createTeam(session))
                     }
                 } else {
-                    val positionPacket = WrapperPlayServerEntityPositionSync(
-                        session.slimeId,
-                        EntityPositionData(slimePosition.position, Vector3d.zero(), 0.0f, 0.0f),
-                        false,
-                    )
-                    playerManager.sendPacket(viewer, positionPacket)
+                    playerManager.sendPacket(viewer, createPositionPacket(session, slimePosition))
                 }
             }
 
@@ -256,6 +253,42 @@ class LeashService(
             session.viewers.clear()
             session.viewers.addAll(currentViewers)
         }
+    }
+
+    private fun createSpawnPacket(session: LeashSession, position: PacketLocation): PacketWrapper<*> {
+        // Living entities had a dedicated spawn packet before 1.19.
+        if (serverVersion.isOlderThan(ServerVersion.V_1_19)) {
+            return WrapperPlayServerSpawnLivingEntity(
+                session.slimeId,
+                session.slimeUUID,
+                EntityTypes.SLIME,
+                position,
+                0.0f,
+                Vector3d.zero(),
+                emptyList(),
+            )
+        }
+        return WrapperPlayServerSpawnEntity(
+            session.slimeId,
+            session.slimeUUID,
+            EntityTypes.SLIME,
+            position,
+            0.0f,
+            0,
+            null,
+        )
+    }
+
+    private fun createPositionPacket(session: LeashSession, position: PacketLocation): PacketWrapper<*> {
+        // The position sync packet was added in 1.21.2.
+        if (serverVersion.isOlderThan(ServerVersion.V_1_21_2)) {
+            return WrapperPlayServerEntityTeleport(session.slimeId, position, false)
+        }
+        return WrapperPlayServerEntityPositionSync(
+            session.slimeId,
+            EntityPositionData(position.position, Vector3d.zero(), 0.0f, 0.0f),
+            false,
+        )
     }
 
     private fun createTeam(session: LeashSession): WrapperPlayServerTeams {

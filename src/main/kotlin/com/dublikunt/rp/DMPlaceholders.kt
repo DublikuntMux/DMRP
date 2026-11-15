@@ -18,11 +18,11 @@ class DMPlaceholders(
     }
 
     override fun getAuthor(): String {
-        return plugin.pluginMeta.authors.joinToString()
+        return plugin.description.authors.joinToString()
     }
 
     override fun getVersion(): String {
-        return plugin.pluginMeta.version
+        return plugin.description.version
     }
 
     override fun persist(): Boolean {
