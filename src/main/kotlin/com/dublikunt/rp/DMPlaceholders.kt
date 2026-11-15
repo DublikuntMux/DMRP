@@ -17,12 +17,10 @@ class DMPlaceholders(
         return "dmrp"
     }
 
-    @Suppress("UnstableApiUsage")
     override fun getAuthor(): String {
         return plugin.pluginMeta.authors.joinToString()
     }
 
-    @Suppress("UnstableApiUsage")
     override fun getVersion(): String {
         return plugin.pluginMeta.version
     }

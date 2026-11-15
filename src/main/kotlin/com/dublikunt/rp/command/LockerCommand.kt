@@ -8,7 +8,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
-@Suppress("UnstableApiUsage")
 class LockerCommand(
     private val config: PluginConfig,
     private val messages: MessageService,

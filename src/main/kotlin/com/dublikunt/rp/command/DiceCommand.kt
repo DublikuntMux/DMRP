@@ -7,7 +7,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.command.CommandSender
 import java.util.concurrent.ThreadLocalRandom
 
-@Suppress("UnstableApiUsage")
 class DiceCommand(
     private val config: PluginConfig,
     private val messages: MessageService,

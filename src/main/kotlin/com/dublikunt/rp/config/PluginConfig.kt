@@ -22,7 +22,6 @@ class PluginConfig internal constructor(
 
     fun load(beforeApply: (Settings) -> Unit = {}) {
         val candidate = loader.load()
-        // Update dependent tasks before publishing; a failure keeps the previous snapshot intact.
         beforeApply(candidate.settings)
         snapshot = candidate
     }

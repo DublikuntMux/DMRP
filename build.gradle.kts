@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -27,10 +26,10 @@ repositories {
 }
 
 dependencies {
+    compileOnly(kotlin("stdlib-jdk8", kotlinVersion))
     compileOnly("io.papermc.paper:paper-api:${paperApiVersion}")
 
-    implementation(kotlin("stdlib", kotlinVersion))
-    implementation("com.google.code.gson:gson:$gsonVersion")
+    compileOnly("com.google.code.gson:gson:$gsonVersion")
     implementation("org.bstats:bstats-bukkit:$bstatsVersion")
 
     compileOnly("me.clip:placeholderapi:$placeholderVersion")
@@ -40,53 +39,47 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
-    }
+    jvmToolchain(25)
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_25)
 }
 
 runPaper {
     disablePluginJarDetection()
 }
 
-val shadowJarTask = tasks.named<ShadowJar>("shadowJar")
-
 tasks {
     runServer {
-        minecraftVersion("26.3")
-        pluginJars(shadowJarTask.flatMap { it.archiveFile })
+        minecraftVersion(mcApiVersion)
+        pluginJars(shadowJar.flatMap { it.archiveFile })
     }
+
     build {
         dependsOn("shadowJar")
     }
+
     processResources {
         val props = mapOf(
             "version" to version,
             "apiVersion" to mcApiVersion,
+            "kotlinVersion" to kotlinVersion,
         )
         inputs.properties(props)
         filteringCharset = "UTF-8"
-        filesMatching("paper-plugin.yml") {
+        filesMatching("plugin.yml") {
             expand(props)
         }
     }
+
     shadowJar {
-        archiveFileName.set("dmrp-$version.jar")
+        archiveFileName.set("dmrp-$version-release.jar")
+
         minimize()
-        exclude(
-            "org/intellij/lang/annotations/**",
-            "org/jetbrains/annotations/**",
-            "META-INF/**",
-        )
-        val prefix = "com.dublikunt.rp.libs"
+        exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
+
         listOf(
             "org.bstats",
-            "com.google.gson",
         ).forEach { pack ->
-            relocate(pack, "$prefix.$pack")
+            relocate(pack, "com.dublikunt.rp.libs.$pack")
         }
-    }
-    compileKotlin {
-        compilerOptions.jvmTarget.set(JvmTarget.JVM_25)
     }
 }

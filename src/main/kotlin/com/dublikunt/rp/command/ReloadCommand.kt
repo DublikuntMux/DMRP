@@ -4,7 +4,6 @@ import com.dublikunt.rp.message.MessageService
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 
-@Suppress("UnstableApiUsage")
 class ReloadCommand(
     private val reload: () -> Boolean,
     private val messages: MessageService,

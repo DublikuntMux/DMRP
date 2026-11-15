@@ -5,7 +5,6 @@ import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import java.util.concurrent.ThreadLocalRandom
 
-@Suppress("UnstableApiUsage")
 class CoinflipCommand(private val messages: MessageService) : BasicCommand {
     override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
         val key = if (ThreadLocalRandom.current().nextBoolean()) {

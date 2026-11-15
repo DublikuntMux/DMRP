@@ -76,7 +76,6 @@ class DMRP : JavaPlugin() {
         }
     }
 
-    @Suppress("UnstableApiUsage")
     private fun registerCommands() {
         registerCommand("rp-reload", ReloadCommand(::reloadConfiguration, messages))
         registerCommand("coinflip", CoinflipCommand(messages))

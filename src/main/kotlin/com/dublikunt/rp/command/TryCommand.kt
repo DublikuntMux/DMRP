@@ -6,7 +6,6 @@ import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import java.util.concurrent.ThreadLocalRandom
 
-@Suppress("UnstableApiUsage")
 class TryCommand(
     private val config: PluginConfig,
     private val messages: MessageService,

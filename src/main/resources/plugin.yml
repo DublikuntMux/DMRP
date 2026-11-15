@@ -1,23 +1,36 @@
 name: DMRP
-main: com.dublikunt.rp.DMRP
 version: "${version}"
 api-version: "${apiVersion}"
+main: com.dublikunt.rp.DMRP
 load: POSTWORLD
-has-open-classloader: false
 
 prefix: DMRP
 description: "Plugin that add new role play commands and mechanics to you server."
 website: https://github.com/DublikuntMux/DMRP
 authors: [ "Dublikunt Max" ]
 
-dependencies:
-  server:
-    packetevents:
-      load: BEFORE
-      required: true
-    PlaceholderAPI:
-      load: BEFORE
-      required: false
+dependencies: [packetevents]
+softDepends: [PlaceholderAPI]
+
+commands:
+  rp-reload:
+    description: Reloads the DMRP plugin
+    permission: dmrp.command.reload
+  coinflip:
+    description: Flips a coin
+    permission: dmrp.command.coinflip
+  try:
+    description: Try to do something
+    permission: dmrp.command.try
+  dice:
+    description: Rolls a dice
+    permission: dmrp.command.dice
+  leash:
+    description: Leash a player
+    permission: dmrp.leash.use
+  lockinv:
+    description: Lock a player's inventory
+    permission: dmrp.lock.use
 
 permissions:
   dmrp.lock.admin:
@@ -40,16 +53,6 @@ permissions:
     description: Gives access to leash players
     default: op
 
-  dmrp.command.*:
-    description: Gives access to all DMRP commands
-    default: op
-    children:
-      dmrp.command.reload: true
-      dmrp.command.try: true
-      dmrp.command.dice: true
-      dmrp.command.coinflip: true
-      dmrp.command.lockinv: true
-      dmrp.command.leash: true
   dmrp.command.reload:
     description: Has permission to reload plugin
     default: op
@@ -68,3 +71,6 @@ permissions:
   dmrp.command.leash:
     description: Has permission to leash player command
     default: op
+
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}

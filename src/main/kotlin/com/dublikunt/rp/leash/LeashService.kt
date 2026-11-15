@@ -30,8 +30,6 @@ class LeashService(
     private val config: PluginConfig,
     private val messages: MessageService,
 ) {
-    // Keyed by the leashed player. A session is also indexed by its owner so it can be
-    // cleaned up in O(1) when either participant leaves.
     private val sessions = HashMap<UUID, LeashSession>()
     private val sessionsByOwner = HashMap<UUID, MutableSet<UUID>>()
     private var syncTask: BukkitTask? = null
